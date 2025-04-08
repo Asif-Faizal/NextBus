@@ -6,6 +6,10 @@ export class UserRepository {
     return User.findOne({ username });
   }
 
+  async findById(id: string): Promise<IUserDocument | null> {
+    return User.findById(id);
+  }
+
   async create(userData: IUser): Promise<IUserDocument> {
     const user = new User(userData);
     return user.save();

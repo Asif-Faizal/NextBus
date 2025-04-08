@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { UserController } from './controllers/user.controller';
+import { BusController } from './controllers/bus.controller';
 import { authMiddleware } from './middlewares/auth.middleware';
 
 // Load environment variables
@@ -33,8 +34,9 @@ mongoose.connect(MONGODB_URI)
     console.error('MongoDB connection error:', error);
   });
 
-// Routes
+// Controllers
 const userController = new UserController();
+const busController = new BusController();
 
 // Public routes
 app.post('/api/auth/login', (req, res) => userController.login(req, res));
@@ -43,6 +45,17 @@ app.post('/api/auth/login', (req, res) => userController.login(req, res));
 app.get('/api/protected', authMiddleware, (req, res) => {
   res.json({ message: 'This is a protected route', userId: req.userId });
 });
+
+// Bus routes
+app.post('/api/buses', authMiddleware, (req, res) => busController.createBus(req, res));
+app.post('/api/buses/:busId/approve', authMiddleware, (req, res) => busController.approveBus(req, res));
+app.post('/api/buses/:busId/edit', authMiddleware, (req, res) => busController.requestEdit(req, res));
+app.post('/api/buses/:busId/delete', authMiddleware, (req, res) => busController.requestDelete(req, res));
+app.post('/api/buses/:busId/approve-edit', authMiddleware, (req, res) => busController.approveEdit(req, res));
+app.post('/api/buses/:busId/approve-delete', authMiddleware, (req, res) => busController.approveDelete(req, res));
+app.post('/api/buses/:busId/reject', authMiddleware, (req, res) => busController.rejectModification(req, res));
+app.get('/api/buses/:busId/history', authMiddleware, (req, res) => busController.getBusHistory(req, res));
+app.get('/api/buses/pending', authMiddleware, (req, res) => busController.getPendingModifications(req, res));
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
