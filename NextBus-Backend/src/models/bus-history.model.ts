@@ -28,7 +28,7 @@ const busHistorySchema = new Schema<IBusHistoryDocument>(
     },
     status: {
       type: Number,
-      enum: Object.values(BusStatus),
+      enum: [BusStatus.CREATED, BusStatus.APPROVED, BusStatus.WAITING_FOR_EDIT, BusStatus.WAITING_FOR_DELETE],
       required: true,
     },
   },

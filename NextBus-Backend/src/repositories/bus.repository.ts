@@ -5,6 +5,13 @@ import mongoose from 'mongoose';
 import { logDebug } from '../utils/logger';
 
 export class BusRepository {
+  async findAll(): Promise<IBusDocument[]> {
+    logDebug('Finding all buses');
+    const buses = await Bus.find().sort({ createdAt: -1 });
+    logDebug(`Found ${buses.length} buses`);
+    return buses;
+  }
+
   async create(busData: IBus): Promise<IBusDocument> {
     const bus = new Bus(busData);
     return bus.save();
@@ -12,10 +19,6 @@ export class BusRepository {
 
   async findById(id: string): Promise<IBusDocument | null> {
     return Bus.findById(id);
-  }
-
-  async findAll(): Promise<IBusDocument[]> {
-    return Bus.find();
   }
 
   async update(id: string, updateData: Partial<IBus>): Promise<IBusDocument | null> {

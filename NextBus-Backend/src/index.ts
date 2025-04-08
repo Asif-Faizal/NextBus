@@ -47,6 +47,7 @@ app.get('/api/protected', authMiddleware, (req, res) => {
 });
 
 // Bus routes
+app.get('/api/buses', authMiddleware, (req, res) => busController.getAllBuses(req, res));
 app.post('/api/buses', authMiddleware, (req, res) => busController.createBus(req, res));
 app.post('/api/buses/:busId/approve', authMiddleware, (req, res) => busController.approveBus(req, res));
 app.post('/api/buses/:busId/edit', authMiddleware, (req, res) => busController.requestEdit(req, res));

@@ -13,6 +13,13 @@ export class BusService {
     this.userRepository = new UserRepository();
   }
 
+  async getAllBuses(): Promise<IBus[]> {
+    logDebug('Getting all buses');
+    const buses = await this.busRepository.findAll();
+    logDebug(`Retrieved ${buses.length} buses`);
+    return buses.map(bus => bus.toObject());
+  }
+
   async createBus(busData: IBus, userId: string): Promise<IBus> {
     const user = await this.userRepository.findById(userId);
     if (!user || user.role !== 'superadmin') {

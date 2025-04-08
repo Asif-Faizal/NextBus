@@ -1,12 +1,25 @@
 import { Request, Response } from 'express';
 import { BusService } from '../services/bus.service';
 import { IBus } from '../interfaces/bus.interface';
+import { logDebug } from '../utils/logger';
 
 export class BusController {
   private busService: BusService;
 
   constructor() {
     this.busService = new BusService();
+  }
+
+  async getAllBuses(req: Request, res: Response): Promise<void> {
+    try {
+      logDebug('GET /api/buses - Getting all buses');
+      const buses = await this.busService.getAllBuses();
+      logDebug(`Returning ${buses.length} buses`);
+      res.json(buses);
+    } catch (error) {
+      logDebug(`Error getting all buses: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      res.status(500).json({ message: error instanceof Error ? error.message : 'Failed to get buses' });
+    }
   }
 
   async createBus(req: Request, res: Response): Promise<void> {
