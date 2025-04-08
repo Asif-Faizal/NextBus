@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_cubit.dart';
+import 'core/widgets/gradient_background.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,36 +42,54 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        actions: [
-          IconButton(
-            icon: Icon(
-              context.watch<ThemeCubit>().state.isDarkMode
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
+    final isDarkMode = context.watch<ThemeCubit>().state.isDarkMode;
+    
+    return GradientBackground(
+      isDarkMode: isDarkMode,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: isDarkMode 
+              ? AppTheme.darkGradientStart
+              : AppTheme.lightGradientStart,
+          title: Text(
+            title,
+            style: TextStyle(
+              color: isDarkMode ? Colors.white : Colors.black87,
+              fontWeight: FontWeight.w900,
             ),
-            onPressed: () {
-              context.read<ThemeCubit>().toggleTheme();
-            },
           ),
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Welcome to NextBus',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Your smart bus tracking solution',
-              style: Theme.of(context).textTheme.bodyLarge,
+          actions: [
+            IconButton(
+              icon: Icon(
+                isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                color: isDarkMode ? Colors.white : Colors.black87,
+              ),
+              onPressed: () {
+                context.read<ThemeCubit>().toggleTheme();
+              },
             ),
           ],
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Welcome to NextBus',
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: isDarkMode ? Colors.white : Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Your smart bus tracking solution',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: isDarkMode ? Colors.white70 : Colors.black54,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
