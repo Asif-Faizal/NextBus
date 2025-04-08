@@ -10,6 +10,21 @@ export class BusController {
     this.busService = new BusService();
   }
 
+  async getBusById(req: Request, res: Response): Promise<void> {
+    try {
+      const busId = req.params.busId;
+      logDebug(`GET /api/buses/${busId} - Getting bus by ID`);
+      
+      const bus = await this.busService.getBusById(busId);
+      logDebug(`Returning bus: ${bus.busName}`);
+      
+      res.json(bus);
+    } catch (error) {
+      logDebug(`Error getting bus by ID: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      res.status(404).json({ message: error instanceof Error ? error.message : 'Bus not found' });
+    }
+  }
+
   async getAllBuses(req: Request, res: Response): Promise<void> {
     try {
       logDebug('GET /api/buses - Getting all buses');

@@ -13,6 +13,19 @@ export class BusService {
     this.userRepository = new UserRepository();
   }
 
+  async getBusById(busId: string): Promise<IBus> {
+    logDebug(`Getting bus by ID: ${busId}`);
+    const bus = await this.busRepository.findById(busId);
+    
+    if (!bus) {
+      logDebug(`Bus not found with ID: ${busId}`);
+      throw new Error('Bus not found');
+    }
+    
+    logDebug(`Retrieved bus: ${bus.busName}`);
+    return bus.toObject();
+  }
+
   async getAllBuses(): Promise<IBus[]> {
     logDebug('Getting all buses');
     const buses = await this.busRepository.findAll();

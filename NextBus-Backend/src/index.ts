@@ -48,6 +48,9 @@ app.get('/api/protected', authMiddleware, (req, res) => {
 
 // Bus routes
 app.get('/api/buses', authMiddleware, (req, res) => busController.getAllBuses(req, res));
+app.get('/api/buses/pending', authMiddleware, (req, res) => busController.getPendingModifications(req, res));
+app.get('/api/buses/:busId/history', authMiddleware, (req, res) => busController.getBusHistory(req, res));
+app.get('/api/buses/:busId', authMiddleware, (req, res) => busController.getBusById(req, res));
 app.post('/api/buses', authMiddleware, (req, res) => busController.createBus(req, res));
 app.post('/api/buses/:busId/approve', authMiddleware, (req, res) => busController.approveBus(req, res));
 app.post('/api/buses/:busId/edit', authMiddleware, (req, res) => busController.requestEdit(req, res));
@@ -55,8 +58,6 @@ app.post('/api/buses/:busId/delete', authMiddleware, (req, res) => busController
 app.post('/api/buses/:busId/approve-edit', authMiddleware, (req, res) => busController.approveEdit(req, res));
 app.post('/api/buses/:busId/approve-delete', authMiddleware, (req, res) => busController.approveDelete(req, res));
 app.post('/api/buses/:busId/reject', authMiddleware, (req, res) => busController.rejectModification(req, res));
-app.get('/api/buses/:busId/history', authMiddleware, (req, res) => busController.getBusHistory(req, res));
-app.get('/api/buses/pending', authMiddleware, (req, res) => busController.getPendingModifications(req, res));
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {

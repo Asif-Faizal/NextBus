@@ -12,13 +12,20 @@ export class BusRepository {
     return buses;
   }
 
+  async findById(id: string): Promise<IBusDocument | null> {
+    logDebug(`Finding bus by ID: ${id}`);
+    const bus = await Bus.findById(id);
+    if (bus) {
+      logDebug(`Bus found: ${bus.busName}`);
+    } else {
+      logDebug(`Bus not found with ID: ${id}`);
+    }
+    return bus;
+  }
+
   async create(busData: IBus): Promise<IBusDocument> {
     const bus = new Bus(busData);
     return bus.save();
-  }
-
-  async findById(id: string): Promise<IBusDocument | null> {
-    return Bus.findById(id);
   }
 
   async update(id: string, updateData: Partial<IBus>): Promise<IBusDocument | null> {
