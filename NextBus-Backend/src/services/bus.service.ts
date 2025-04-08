@@ -118,16 +118,41 @@ export class BusService {
   }
 
   async requestDelete(busId: string, userId: string): Promise<IBus> {
-    const bus = await this.busRepository.findById(busId);
+    logDebug(`Attempting to request deletion of bus ${busId} by user ${userId}`);
+    
+    const [bus, user] = await Promise.all([
+      this.busRepository.findById(busId),
+      this.userRepository.findById(userId),
+    ]);
+
     if (!bus) {
+      logDebug(`Bus ${busId} not found for deletion request`);
       throw new Error('Bus not found');
     }
 
+    if (!user || user.role !== 'superadmin') {
+      logDebug(`User ${userId} is not authorized to request deletion`);
+      throw new Error('Only superadmins can request deletion');
+    }
+
     if (bus.status !== BusStatus.APPROVED) {
+      logDebug(`Bus ${busId} is not in APPROVED status, current status: ${bus.status}`);
       throw new Error('Only approved buses can be deleted');
     }
 
+    // Ensure the user is not the creator of the bus
+    const busCreatorId = bus.createdBy.toString().trim();
+    const requestingUserId = userId.toString().trim();
+    
+    logDebug(`Bus creator: "${busCreatorId}", Requesting user: "${requestingUserId}"`);
+    
+    if (busCreatorId === requestingUserId) {
+      logDebug(`User ${userId} cannot request deletion of a bus they created`);
+      throw new Error('You cannot request deletion of a bus that you created. Only another superadmin can request it.');
+    }
+
     // Create history record
+    logDebug(`Creating deletion history record for bus ${busId}`);
     await this.busRepository.createHistory({
       busId,
       previousData: bus.toObject(),
@@ -139,11 +164,13 @@ export class BusService {
     });
 
     // Update bus status
+    logDebug(`Updating bus ${busId} status to WAITING_FOR_DELETE`);
     const updatedBus = await this.busRepository.update(busId, {
       status: BusStatus.WAITING_FOR_DELETE,
       lastModifiedBy: userId,
     });
 
+    logDebug(`Bus ${busId} deletion request completed successfully`);
     return updatedBus!.toObject();
   }
 
@@ -182,24 +209,50 @@ export class BusService {
   }
 
   async approveDelete(busId: string, userId: string): Promise<void> {
-    const [bus, user] = await Promise.all([
+    logDebug(`Attempting to approve deletion of bus ${busId} by user ${userId}`);
+    
+    const [bus, user, history] = await Promise.all([
       this.busRepository.findById(busId),
       this.userRepository.findById(userId),
+      this.busRepository.findBusHistory(busId),
     ]);
 
     if (!bus) {
+      logDebug(`Bus ${busId} not found for deletion approval`);
       throw new Error('Bus not found');
     }
 
     if (!user || user.role !== 'superadmin') {
+      logDebug(`User ${userId} is not authorized to approve deletion`);
       throw new Error('Only superadmins can approve deletions');
     }
 
     if (bus.status !== BusStatus.WAITING_FOR_DELETE) {
+      logDebug(`Bus ${busId} is not in WAITING_FOR_DELETE status, current status: ${bus.status}`);
       throw new Error('Bus is not waiting for delete approval');
     }
 
+    // Ensure the user is not the one who requested the deletion
+    const latestHistory = history[0];
+    if (!latestHistory) {
+      logDebug(`No deletion history found for bus ${busId}`);
+      throw new Error('No deletion history found');
+    }
+
+    const requestingUserId = latestHistory.modifiedBy.toString().trim();
+    const approvingUserId = userId.toString().trim();
+    
+    logDebug(`Deletion requested by: "${requestingUserId}", Approving user: "${approvingUserId}"`);
+    
+    if (requestingUserId === approvingUserId) {
+      logDebug(`User ${userId} cannot approve their own deletion request`);
+      throw new Error('You cannot approve a deletion request that you made. Only another superadmin can approve it.');
+    }
+
+    // Delete the bus
+    logDebug(`Deleting bus ${busId}`);
     await this.busRepository.delete(busId);
+    logDebug(`Bus ${busId} deleted successfully`);
   }
 
   async rejectModification(busId: string, userId: string): Promise<IBus> {
