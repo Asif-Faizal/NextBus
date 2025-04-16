@@ -1,10 +1,67 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const lightGradientStart = Color.fromARGB(255, 222, 255, 255);
+  static const lightGradientStart = Color.fromARGB(255, 215, 233, 235);
   static const lightGradientEnd = Colors.white;
   static const darkGradientStart = Color.fromARGB(255, 15, 21, 21);
   static const darkGradientEnd = Color.fromARGB(255, 24, 34, 34);
+
+  static InputDecorationTheme _getInputDecorationTheme(bool isDark) {
+    return InputDecorationTheme(
+      filled: true,
+      fillColor: isDark 
+          ? darkGradientEnd.withValues(alpha:0.7)
+          : Colors.white.withValues(alpha:0.9),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(
+          color: isDark ? Colors.white24 : Colors.black12,
+          width: 1,
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(2),
+        borderSide: BorderSide(
+          color: isDark ? Colors.white24 : Colors.black12,
+          width: 1,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(2),
+        borderSide: BorderSide(
+          color: isDark ? const Color.fromARGB(255, 0, 87, 87) :  const Color.fromARGB(255, 0, 242, 255),
+          width: 2,
+        ),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(2),
+        borderSide: BorderSide(
+          color: Colors.red.shade800,
+          width: 1,
+        ),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(2),
+        borderSide: BorderSide(
+          color: Colors.red.shade800,
+          width: 2,
+        ),
+      ),
+      hintStyle: TextStyle(
+        color: isDark ? Colors.white60 : Colors.black54,
+        fontSize: 16,
+      ),
+      labelStyle: TextStyle(
+        color: isDark ? Colors.white70 : Colors.black87,
+        fontSize: 16,
+      ),
+      errorStyle: TextStyle(
+        color: Colors.red.shade800,
+        fontSize: 14,
+      ),
+    );
+  }
 
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
@@ -15,6 +72,7 @@ class AppTheme {
       surface: lightGradientStart,
       error: Colors.red.shade800,
     ),
+    inputDecorationTheme: _getInputDecorationTheme(false),
     fontFamily: 'Montserrat',
     textTheme: const TextTheme(
       displayLarge: TextStyle(fontWeight: FontWeight.w900),
@@ -34,14 +92,25 @@ class AppTheme {
       labelSmall: TextStyle(fontWeight: FontWeight.w500),
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: lightGradientStart,
+      backgroundColor: Colors.transparent,
       foregroundColor: Colors.black87,
     ),
     cardTheme: CardTheme(
-      color: Colors.white.withOpacity(0.9),
-      elevation: 2,
+      color: Colors.white.withValues(alpha:0.9),
+      elevation: 1,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF008080),
+        foregroundColor: Colors.white,
+        elevation: 2,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
       ),
     ),
     scaffoldBackgroundColor: lightGradientStart,
@@ -56,6 +125,7 @@ class AppTheme {
       surface: darkGradientStart,
       error: Colors.red.shade800,
     ),
+    inputDecorationTheme: _getInputDecorationTheme(true),
     fontFamily: 'Montserrat',
     textTheme: const TextTheme(
       displayLarge: TextStyle(fontWeight: FontWeight.w900),
@@ -75,16 +145,28 @@ class AppTheme {
       labelSmall: TextStyle(fontWeight: FontWeight.w500),
     ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: darkGradientStart,
+      backgroundColor: Colors.transparent,
       foregroundColor: Colors.white,
+      elevation: 0,
     ),
     cardTheme: CardTheme(
-      color: darkGradientEnd.withOpacity(0.9),
-      elevation: 2,
+      color: darkGradientEnd.withValues(alpha:0.9),
+      elevation: 1,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
       ),
     ),
-    scaffoldBackgroundColor: darkGradientStart,
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF00B3B3),
+        foregroundColor: Colors.white,
+        elevation: 2,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+      ),
+    ),
+    scaffoldBackgroundColor: Colors.transparent,
   );
 } 
