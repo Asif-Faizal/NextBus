@@ -15,7 +15,7 @@ const LoginContent = () => {
     : theme.colors.light.text;
   
   return (
-    <GradientBackground isDarkMode={isDarkMode}>
+    <>
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
@@ -59,7 +59,7 @@ const LoginContent = () => {
           </div>
         </div>
       </div>
-    </GradientBackground>
+    </>
   );
 };
 

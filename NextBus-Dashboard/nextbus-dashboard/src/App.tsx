@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { store } from './store/index';
-import Login from './pages/Login';
+import Login from './app/login/page';
 import { usePathname, useRouter } from 'next/navigation';
 import { ThemeProvider } from './context/ThemeContext';
 
