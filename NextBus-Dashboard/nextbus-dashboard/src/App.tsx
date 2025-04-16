@@ -1,11 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { store } from './store/index';
 import Login from './pages/Login';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
@@ -29,15 +29,15 @@ const App: React.FC = () => {
 
   return (
     <Provider store={store}>
-      {pathname === '/login' ? (
-        <Login />
-      ) : pathname === '/home' ? (
-        <PrivateRoute>
-          <div>Home Page Content</div>
-        </PrivateRoute>
-      ) : (
-        <Login />
-      )}
+      <ThemeProvider>
+        {pathname === '/login' ? (
+          <Login />
+        ) : (
+          <PrivateRoute>
+            <div>Home Page Content</div>
+          </PrivateRoute>
+        )}
+      </ThemeProvider>
     </Provider>
   );
 };

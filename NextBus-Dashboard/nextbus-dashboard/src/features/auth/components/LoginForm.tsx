@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAppDispatch } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { loginStart, loginSuccess, loginFailure } from '@/store/slices/authSlice';
 import { login } from '@/services/authService';
 import Input from '@/components/ui/Input';
@@ -31,6 +31,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDarkMode }) => {
   });
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -62,17 +63,21 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDarkMode }) => {
       [name]: value
     }));
     
-    // Clear error when user types
+    // Clear errors when user types
     if (errors[name as keyof ValidationErrors]) {
       setErrors(prev => ({
         ...prev,
         [name]: undefined
       }));
     }
+    if (apiError) {
+      setApiError(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setApiError(null);
     
     if (!validateForm()) return;
     
@@ -84,8 +89,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDarkMode }) => {
         username: formData.username,
         password: formData.password
       });
-      
-      console.log('Login response:', response);
       
       dispatch(loginSuccess({
         user: {
@@ -99,7 +102,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDarkMode }) => {
       router.push('/home');
     } catch (error) {
       console.error('Login error:', error);
-      dispatch(loginFailure(error instanceof Error ? error.message : 'Login failed'));
+      const errorMessage = error instanceof Error ? error.message : 'Login failed. Please try again';
+      setApiError(errorMessage);
+      dispatch(loginFailure(errorMessage));
+      
+      // Clear password field on error
+      setFormData(prev => ({ ...prev, password: '' }));
     } finally {
       setIsLoading(false);
     }
@@ -146,6 +154,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDarkMode }) => {
             isDarkMode={isDarkMode}
             required
           />
+          
+          {apiError && (
+            <div 
+              className="mt-4 p-3 text-center text-sm rounded-md"
+              style={{ 
+                backgroundColor: isDarkMode ? theme.colors.dark.error + '20' : theme.colors.light.error + '20',
+                color: isDarkMode ? theme.colors.dark.error : theme.colors.light.error,
+                fontFamily: theme.fontFamily.primary
+              }}
+            >
+              {apiError}
+            </div>
+          )}
           
           <div className="flex justify-between items-center mb-6">
             <label 

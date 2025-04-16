@@ -1,6 +1,8 @@
 'use client';
 
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useContext } from 'react';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { toggleTheme } from '@/store/slices/themeSlice';
 
 type ThemeContextType = {
   isDarkMode: boolean;
@@ -10,31 +12,15 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const dispatch = useAppDispatch();
+  const isDarkMode = useAppSelector((state) => state.theme.isDarkMode);
 
-  // Check system preference on initial load
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setIsDarkMode(darkModePreference);
-      
-      // Listen for changes in system preference
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      const handleChange = (e: MediaQueryListEvent) => {
-        setIsDarkMode(e.matches);
-      };
-      
-      mediaQuery.addEventListener('change', handleChange);
-      return () => mediaQuery.removeEventListener('change', handleChange);
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    setIsDarkMode((prev) => !prev);
+  const handleToggleTheme = () => {
+    dispatch(toggleTheme());
   };
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme: handleToggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

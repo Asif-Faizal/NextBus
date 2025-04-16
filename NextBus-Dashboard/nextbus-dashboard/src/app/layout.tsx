@@ -6,6 +6,8 @@ import "./globals.css";
 import { Provider } from 'react-redux';
 import { store } from '../store';
 import GradientBackground from '@/components/GradientBackground';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
+import { useEffect } from 'react';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,6 +25,25 @@ const montserrat = Montserrat({
   weight: ["400", "500", "700", "900"],
 });
 
+const LayoutContent = ({ children }: { children: React.ReactNode }) => {
+  const { isDarkMode } = useTheme();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+      }
+    }
+  }, []);
+
+  return (
+    <GradientBackground isDarkMode={isDarkMode}>
+      {children}
+    </GradientBackground>
+  );
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,9 +55,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased`}
       >
         <Provider store={store}>
-          <GradientBackground isDarkMode={false}>
-            {children}
-          </GradientBackground>
+          <ThemeProvider>
+            <LayoutContent>
+              {children}
+            </LayoutContent>
+          </ThemeProvider>
         </Provider>
       </body>
     </html>
