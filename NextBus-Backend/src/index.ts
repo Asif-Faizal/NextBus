@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { UserController } from './controllers/user.controller';
 import { BusController } from './controllers/bus.controller';
+import { RouteController } from './controllers/route.controller';
 import { authMiddleware } from './middlewares/auth.middleware';
 
 // Load environment variables
@@ -37,6 +38,7 @@ mongoose.connect(MONGODB_URI)
 // Controllers
 const userController = new UserController();
 const busController = new BusController();
+const routeController = new RouteController();
 
 // Public routes
 app.post('/api/auth/login', (req, res) => userController.login(req, res));
@@ -59,6 +61,14 @@ app.post('/api/buses/:busId/delete', authMiddleware, (req, res) => busController
 app.post('/api/buses/:busId/approve-edit', authMiddleware, (req, res) => busController.approveEdit(req, res));
 app.post('/api/buses/:busId/approve-delete', authMiddleware, (req, res) => busController.approveDelete(req, res));
 app.post('/api/buses/:busId/reject', authMiddleware, (req, res) => busController.rejectModification(req, res));
+
+// Route routes
+app.post('/api/routes', authMiddleware, (req, res) => routeController.createRoute(req, res));
+app.get('/api/routes', authMiddleware, (req, res) => routeController.getAllRoutes(req, res));
+app.get('/api/routes/:id', authMiddleware, (req, res) => routeController.getRouteById(req, res));
+app.get('/api/buses/:busId/routes', authMiddleware, (req, res) => routeController.getRoutesByBusId(req, res));
+app.put('/api/routes/:id', authMiddleware, (req, res) => routeController.updateRoute(req, res));
+app.delete('/api/routes/:id', authMiddleware, (req, res) => routeController.deleteRoute(req, res));
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
