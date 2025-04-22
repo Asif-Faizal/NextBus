@@ -10,9 +10,17 @@ export class UserRepository {
     return User.findById(id);
   }
 
+  async findByRefreshToken(refreshToken: string): Promise<IUserDocument | null> {
+    return User.findOne({ refreshToken });
+  }
+
   async create(userData: IUser): Promise<IUserDocument> {
     const user = new User(userData);
     return user.save();
+  }
+
+  async updateRefreshToken(userId: string, refreshToken: string | null): Promise<IUserDocument | null> {
+    return User.findByIdAndUpdate(userId, { refreshToken }, { new: true });
   }
 
   async findSuperAdmins(): Promise<IUserDocument[]> {

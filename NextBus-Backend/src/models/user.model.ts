@@ -20,6 +20,10 @@ const userSchema = new Schema<IUserDocument>(
       enum: ['superadmin', 'admin', 'user'],
       default: 'user',
     },
+    refreshToken: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,

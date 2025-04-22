@@ -40,6 +40,7 @@ const busController = new BusController();
 
 // Public routes
 app.post('/api/auth/login', (req, res) => userController.login(req, res));
+app.post('/api/auth/refresh-token', (req, res) => userController.refreshToken(req, res));
 
 // Protected routes
 app.get('/api/protected', authMiddleware, (req, res) => {
