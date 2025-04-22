@@ -4,8 +4,9 @@ import { IRoute, IStop } from '../interfaces/route.interface';
 export interface IRouteDocument extends IRoute, Document {}
 
 const stopSchema = new Schema<IStop>({
-  name: {
-    type: String,
+  stopId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Stop',
     required: true,
   },
   time: {

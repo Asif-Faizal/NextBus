@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import { UserController } from './controllers/user.controller';
 import { BusController } from './controllers/bus.controller';
 import { RouteController } from './controllers/route.controller';
+import { StopController } from './controllers/stop.controller';
 import { authMiddleware } from './middlewares/auth.middleware';
 
 // Load environment variables
@@ -39,6 +40,7 @@ mongoose.connect(MONGODB_URI)
 const userController = new UserController();
 const busController = new BusController();
 const routeController = new RouteController();
+const stopController = new StopController();
 
 // Public routes
 app.post('/api/auth/login', (req, res) => userController.login(req, res));
@@ -61,6 +63,13 @@ app.post('/api/buses/:busId/delete', authMiddleware, (req, res) => busController
 app.post('/api/buses/:busId/approve-edit', authMiddleware, (req, res) => busController.approveEdit(req, res));
 app.post('/api/buses/:busId/approve-delete', authMiddleware, (req, res) => busController.approveDelete(req, res));
 app.post('/api/buses/:busId/reject', authMiddleware, (req, res) => busController.rejectModification(req, res));
+
+// Stop routes
+app.post('/api/stops', authMiddleware, (req, res) => stopController.createStop(req, res));
+app.get('/api/stops', authMiddleware, (req, res) => stopController.getAllStops(req, res));
+app.get('/api/stops/:id', authMiddleware, (req, res) => stopController.getStopById(req, res));
+app.put('/api/stops/:id', authMiddleware, (req, res) => stopController.updateStop(req, res));
+app.delete('/api/stops/:id', authMiddleware, (req, res) => stopController.deleteStop(req, res));
 
 // Route routes
 app.post('/api/routes', authMiddleware, (req, res) => routeController.createRoute(req, res));

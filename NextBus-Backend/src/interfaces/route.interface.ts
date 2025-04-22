@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 
 export interface IStop {
-  name: string;
+  stopId: Types.ObjectId;
   time: Date;
 }
 
@@ -20,7 +20,10 @@ export interface IRouteCreate {
   busId: string;
   startTime: string;
   endTime: string;
-  stops: IStop[];
+  stops: {
+    stopId: string;
+    time: string;
+  }[];
 }
 
 export interface IRouteResponse {
@@ -29,7 +32,13 @@ export interface IRouteResponse {
   busId: string;
   startTime: Date;
   endTime: Date;
-  stops: IStop[];
+  stops: {
+    stopId: string;
+    stopName: string;
+    stopType: string;
+    stopDistrict: string;
+    time: Date;
+  }[];
   createdAt: Date;
   updatedAt: Date;
 } 
