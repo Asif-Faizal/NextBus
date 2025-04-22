@@ -1,27 +1,14 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import { theme } from '@/theme/theme';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { getBuses } from '@/store/slices/busSlice';
-import BusList from '@/components/BusList';
 
-const BusesPage: React.FC = () => {
+const StopsPage: React.FC = () => {
   const { isDarkMode } = useTheme();
-  const dispatch = useAppDispatch();
-  const { buses, loading, error } = useAppSelector((state) => state.buses);
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
-
   const cardBackground = isDarkMode 
     ? theme.colors.dark.card.background 
     : theme.colors.light.card.background;
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(getBuses());
-    }
-  }, [dispatch, isAuthenticated]);
 
   return (
     <div className="space-y-6">
@@ -33,24 +20,17 @@ const BusesPage: React.FC = () => {
           color: isDarkMode ? theme.colors.dark.text.primary : theme.colors.light.text.primary,
           fontFamily: theme.fontFamily.primary
         }}>
-          Buses Management
+          Bus Stops Management
         </h2>
         <p style={{ 
           color: isDarkMode ? theme.colors.dark.text.secondary : theme.colors.light.text.secondary,
           fontFamily: theme.fontFamily.primary
         }}>
-          Manage your bus fleet and track their status.
+          Manage and monitor all bus stops in your network.
         </p>
       </div>
-
-      {/* Display buses list */}
-      <BusList 
-        buses={buses}
-        loading={loading}
-        error={error}
-      />
     </div>
   );
 };
 
-export default BusesPage; 
+export default StopsPage; 
