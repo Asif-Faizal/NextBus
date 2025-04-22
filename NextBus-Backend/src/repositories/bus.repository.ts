@@ -4,12 +4,83 @@ import { IBus, IBusHistory, BusStatus } from '../interfaces/bus.interface';
 import mongoose from 'mongoose';
 import { logDebug } from '../utils/logger';
 
+export interface BusQueryOptions {
+  page?: number;
+  limit?: number;
+  busName?: string;
+  busNumberPlate?: string;
+  status?: number;
+  busType?: string;
+  busSubType?: string;
+}
+
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 export class BusRepository {
-  async findAll(): Promise<IBusDocument[]> {
-    logDebug('Finding all buses');
-    const buses = await Bus.find().sort({ createdAt: -1 });
-    logDebug(`Found ${buses.length} buses`);
-    return buses;
+  async findAll(options?: BusQueryOptions): Promise<PaginatedResult<IBusDocument>> {
+    logDebug('Finding buses with options: ' + JSON.stringify(options || {}));
+    
+    // Default values
+    const page = options?.page || 1;
+    const limit = options?.limit || 10;
+    const skip = (page - 1) * limit;
+    
+    // Build query
+    let query = Bus.find();
+    
+    // Apply filters if provided
+    if (options) {
+      // Search by bus name (case-insensitive partial match)
+      if (options.busName) {
+        query = query.where('busName', { $regex: options.busName, $options: 'i' });
+      }
+      
+      // Search by bus number plate (case-insensitive partial match)
+      if (options.busNumberPlate) {
+        query = query.where('busNumberPlate', { $regex: options.busNumberPlate, $options: 'i' });
+      }
+      
+      // Filter by status
+      if (options.status) {
+        query = query.where('status', options.status);
+      }
+      
+      // Filter by bus type
+      if (options.busType) {
+        query = query.where('busType', options.busType);
+      }
+      
+      // Filter by bus sub type
+      if (options.busSubType) {
+        query = query.where('busSubType', options.busSubType);
+      }
+    }
+    
+    // Execute count query
+    const total = await Bus.countDocuments(query.getQuery());
+    
+    // Execute main query with pagination
+    const buses = await query
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec();
+    
+    logDebug(`Found ${buses.length} buses (total: ${total})`);
+    
+    return {
+      data: buses,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    };
   }
 
   async findById(id: string): Promise<IBusDocument | null> {

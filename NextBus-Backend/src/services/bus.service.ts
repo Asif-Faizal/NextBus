@@ -1,4 +1,4 @@
-import { BusRepository } from '../repositories/bus.repository';
+import { BusRepository, BusQueryOptions, PaginatedResult } from '../repositories/bus.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { IBus, IBusHistory, BusStatus } from '../interfaces/bus.interface';
 import { IUserDocument } from '../models/user.model';
@@ -26,11 +26,14 @@ export class BusService {
     return bus.toObject();
   }
 
-  async getAllBuses(): Promise<IBus[]> {
-    logDebug('Getting all buses');
-    const buses = await this.busRepository.findAll();
-    logDebug(`Retrieved ${buses.length} buses`);
-    return buses.map(bus => bus.toObject());
+  async getAllBuses(options?: BusQueryOptions): Promise<PaginatedResult<IBus>> {
+    logDebug('Getting buses with options: ' + JSON.stringify(options || {}));
+    const result = await this.busRepository.findAll(options);
+    
+    return {
+      ...result,
+      data: result.data.map(bus => bus.toObject())
+    };
   }
 
   async createBus(busData: IBus, userId: string): Promise<IBus> {

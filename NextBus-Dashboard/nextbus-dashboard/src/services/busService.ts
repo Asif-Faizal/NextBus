@@ -18,7 +18,25 @@ export interface Bus {
   lastModifiedBy?: string;
 }
 
-export const fetchBuses = async (): Promise<Bus[]> => {
+export interface PaginatedBusResult {
+  data: Bus[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface BusQueryOptions {
+  page?: number;
+  limit?: number;
+  busName?: string;
+  busNumberPlate?: string;
+  status?: number;
+  busType?: string;
+  busSubType?: string;
+}
+
+export const fetchBuses = async (options: BusQueryOptions = {}): Promise<PaginatedBusResult> => {
   try {
     // Get the token from localStorage
     const token = localStorage.getItem('token');
@@ -27,7 +45,20 @@ export const fetchBuses = async (): Promise<Bus[]> => {
       throw new Error('Authentication token not found');
     }
 
-    const response = await fetch(`${API_URL}/buses`, {
+    // Build query string from options
+    const queryParams = new URLSearchParams();
+    if (options.page) queryParams.append('page', options.page.toString());
+    if (options.limit) queryParams.append('limit', options.limit.toString());
+    if (options.busName) queryParams.append('busName', options.busName);
+    if (options.busNumberPlate) queryParams.append('busNumberPlate', options.busNumberPlate);
+    if (options.status) queryParams.append('status', options.status.toString());
+    if (options.busType) queryParams.append('busType', options.busType);
+    if (options.busSubType) queryParams.append('busSubType', options.busSubType);
+
+    const queryString = queryParams.toString();
+    const url = `${API_URL}/buses${queryString ? `?${queryString}` : ''}`;
+
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

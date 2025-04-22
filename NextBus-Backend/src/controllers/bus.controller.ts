@@ -27,12 +27,26 @@ export class BusController {
 
   async getAllBuses(req: Request, res: Response): Promise<void> {
     try {
-      logDebug('GET /api/buses - Getting all buses');
-      const buses = await this.busService.getAllBuses();
-      logDebug(`Returning ${buses.length} buses`);
-      res.json(buses);
+      logDebug('GET /api/buses - Getting buses with filters');
+      
+      // Extract query parameters
+      const queryOptions = {
+        page: req.query.page ? parseInt(req.query.page as string) : undefined,
+        limit: req.query.limit ? parseInt(req.query.limit as string) : undefined,
+        busName: req.query.busName as string | undefined,
+        busNumberPlate: req.query.busNumberPlate as string | undefined,
+        status: req.query.status ? parseInt(req.query.status as string) : undefined,
+        busType: req.query.busType as string | undefined,
+        busSubType: req.query.busSubType as string | undefined
+      };
+      
+      logDebug(`Query options: ${JSON.stringify(queryOptions)}`);
+      const result = await this.busService.getAllBuses(queryOptions);
+      
+      logDebug(`Returning ${result.data.length} buses out of ${result.total}`);
+      res.json(result);
     } catch (error) {
-      logDebug(`Error getting all buses: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      logDebug(`Error getting buses: ${error instanceof Error ? error.message : 'Unknown error'}`);
       res.status(500).json({ message: error instanceof Error ? error.message : 'Failed to get buses' });
     }
   }
