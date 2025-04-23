@@ -58,13 +58,6 @@ if ! git push origin develop; then
     exit 1
 fi
 
-# Push to upstream develop
-echo -e "${BLUE}Pushing to upstream develop...${NC}"
-if ! git push upstream develop; then
-    echo -e "${RED}Error: Failed to push to upstream develop${NC}"
-    exit 1
-fi
-
 echo -e "${GREEN}"
 echo " ┌─────────────────────────────────────────────────────┐"
 echo " │ Successfully pushed to both origin and upstream      │"
