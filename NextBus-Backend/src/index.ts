@@ -8,6 +8,7 @@ import { UserController } from './controllers/user.controller';
 import { BusController } from './controllers/bus.controller';
 import { RouteController } from './controllers/route.controller';
 import { StopController } from './controllers/stop.controller';
+import { AdController } from './controllers/ad.controller';
 import { authMiddleware } from './middlewares/auth.middleware';
 
 // Load environment variables
@@ -41,6 +42,7 @@ const userController = new UserController();
 const busController = new BusController();
 const routeController = new RouteController();
 const stopController = new StopController();
+const adController = new AdController();
 
 // Public routes
 app.post('/api/auth/login', (req, res) => userController.login(req, res));
@@ -63,6 +65,19 @@ app.post('/api/buses/:busId/delete', authMiddleware, (req, res) => busController
 app.post('/api/buses/:busId/approve-edit', authMiddleware, (req, res) => busController.approveEdit(req, res));
 app.post('/api/buses/:busId/approve-delete', authMiddleware, (req, res) => busController.approveDelete(req, res));
 app.post('/api/buses/:busId/reject', authMiddleware, (req, res) => busController.rejectModification(req, res));
+
+// Ad routes
+app.get('/api/ads', authMiddleware, (req, res) => adController.getAllAds(req, res));
+app.get('/api/ads/pending', authMiddleware, (req, res) => adController.getPendingModifications(req, res));
+app.get('/api/ads/:adId/history', authMiddleware, (req, res) => adController.getAdHistory(req, res));
+app.get('/api/ads/:adId', authMiddleware, (req, res) => adController.getAdById(req, res));
+app.post('/api/ads', authMiddleware, (req, res) => adController.createAd(req, res));
+app.post('/api/ads/:adId/approve', authMiddleware, (req, res) => adController.approveAd(req, res));
+app.post('/api/ads/:adId/edit', authMiddleware, (req, res) => adController.requestEdit(req, res));
+app.post('/api/ads/:adId/delete', authMiddleware, (req, res) => adController.requestDelete(req, res));
+app.post('/api/ads/:adId/approve-edit', authMiddleware, (req, res) => adController.approveEdit(req, res));
+app.post('/api/ads/:adId/approve-delete', authMiddleware, (req, res) => adController.approveDelete(req, res));
+app.post('/api/ads/:adId/reject', authMiddleware, (req, res) => adController.rejectModification(req, res));
 
 // Stop routes
 app.post('/api/stops', authMiddleware, (req, res) => stopController.createStop(req, res));

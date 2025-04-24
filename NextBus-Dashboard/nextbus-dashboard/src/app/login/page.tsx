@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import LoginForm from '@/features/auth/components/LoginForm';
+import LoginForm from '@/components/LoginForm';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { theme } from '@/theme/theme';
