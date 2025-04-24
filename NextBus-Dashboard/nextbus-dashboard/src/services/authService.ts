@@ -10,11 +10,7 @@ interface LoginResponse {
   username: string;
   role: string;
   token: string;
-}
-
-interface ErrorResponse {
-  message: string;
-  error?: string;
+  refreshToken: string;
 }
 
 export const login = async (credentials: LoginCredentials): Promise<LoginResponse> => {

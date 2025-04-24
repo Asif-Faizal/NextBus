@@ -22,6 +22,7 @@ export default function HomeLayout({
     { name: 'Buses', path: '/home/buses' },
     { name: 'Routes', path: '/home/routes' },
     { name: 'Stops', path: '/home/stops' },
+    { name: 'Ads', path: '/home/ads' },
     { name: 'Settings', path: '/home/settings' },
   ];
 

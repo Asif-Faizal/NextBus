@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useAppDispatch } from '@/store/hooks';
 import { loginStart, loginSuccess, loginFailure } from '@/store/slices/authSlice';
 import { login } from '@/services/authService';
 import Input from '@/components/ui/Input';
@@ -97,6 +97,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDarkMode }) => {
           role: response.role,
         },
         token: response.token,
+        refreshToken: response.refreshToken,
       }));
       
       router.push('/home');

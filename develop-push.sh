@@ -60,7 +60,6 @@ fi
 
 echo -e "${GREEN}"
 echo " ┌─────────────────────────────────────────────────────┐"
-echo " │ Successfully pushed to both origin and upstream      │"
-echo " │ develop branches                                     │"
+echo " │ Successfully pushed to both origin develop branch   │"
 echo " └─────────────────────────────────────────────────────┘"
 echo -e "${NC}" 

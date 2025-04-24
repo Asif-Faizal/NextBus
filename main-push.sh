@@ -87,8 +87,7 @@ if [ "$stashed" = true ]; then
 fi
 
 echo -e "${GREEN}"
-echo " ┌─────────────────────────────────────────────────┐"
-echo " │ Process completed: Merged develop into main and  │"
-echo " │ pushed to both remotes                          │"
-echo " └─────────────────────────────────────────────────┘"
+echo " ┌─────────────────────────────────────────────────────┐"
+echo " │ Successfully pushed to both origin main branch      │"
+echo " └─────────────────────────────────────────────────────┘"
 echo -e "${NC}" 

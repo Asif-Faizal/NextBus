@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import GradientBackground from '@/components/GradientBackground';
 import LoginForm from '@/features/auth/components/LoginForm';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';

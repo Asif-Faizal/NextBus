@@ -1,3 +1,5 @@
+import { apiRequest } from './apiHandler';
+
 const API_URL = 'http://localhost:5001/api'; // Replace with your actual API URL
 
 export interface Bus {
@@ -38,13 +40,6 @@ export interface BusQueryOptions {
 
 export const fetchBuses = async (options: BusQueryOptions = {}): Promise<PaginatedBusResult> => {
   try {
-    // Get the token from localStorage
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
-      throw new Error('Authentication token not found');
-    }
-
     // Build query string from options
     const queryParams = new URLSearchParams();
     if (options.page) queryParams.append('page', options.page.toString());
@@ -58,19 +53,13 @@ export const fetchBuses = async (options: BusQueryOptions = {}): Promise<Paginat
     const queryString = queryParams.toString();
     const url = `${API_URL}/buses${queryString ? `?${queryString}` : ''}`;
 
-    const response = await fetch(url, {
+    const response = await apiRequest(url, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
     });
 
     if (!response.ok) {
       // Handle specific error cases
-      if (response.status === 401) {
-        throw new Error('Unauthorized. Please login again');
-      } else if (response.status === 403) {
+      if (response.status === 403) {
         throw new Error('You do not have permission to access this resource');
       } else if (response.status === 500) {
         throw new Error('Server error. Please try again later');

@@ -9,7 +9,7 @@ export const theme = {
       error: '#c62828',
       text: {
         primary: '#171717',
-        secondary: '#424242',
+        secondary: '#FFFFFF',
         hint: '#616161',
         disabled: '#9e9e9e',
       },
@@ -23,7 +23,7 @@ export const theme = {
       input: {
         background: 'rgba(255, 255, 255, 0.9)',
         border: 'rgba(0, 0, 0, 0.12)',
-        focusedBorder: '#00f2ff',
+        focusedBorder: '#008080',
         errorBorder: '#c62828',
       }
     },
@@ -50,7 +50,7 @@ export const theme = {
       input: {
         background: 'rgba(24, 34, 34, 0.7)',
         border: 'rgba(255, 255, 255, 0.24)',
-        focusedBorder: '#005757',
+        focusedBorder: '#008080',
         errorBorder: '#c62828',
       }
     }
