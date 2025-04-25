@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:next_bus_admin/core/routing/routing_extension.dart';
 
+import '../../../core/routing/route_constatnts.dart';
+import '../../../core/routing/routing_arguments.dart';
 import '../../../core/theme/theme_cubit.dart';
 import '../../../core/widgets/error_snackbar.dart';
 import '../../../core/widgets/gradient_background.dart';
@@ -22,7 +25,9 @@ class LoginScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is LoginFailure) {
             showErrorSnackBar(context, state.message);
-            print(state.message);
+          }
+          else if (state is LoginSuccess) {
+            context.navigateToAndRemoveUntil(RouteConstants.dashboard, arguments: DashboardArguments(username: usernameController.text, userType: state.user.role, userID: state.user.id));
           }
         },
         child: SafeArea(

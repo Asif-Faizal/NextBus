@@ -6,8 +6,10 @@ import 'core/injection/dependency_injection.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_cubit.dart';
 import 'core/cubit/date_cubit.dart';
+import 'core/routing/navigation_service.dart';
+import 'core/routing/route_constatnts.dart';
+import 'core/routing/route_generator.dart';
 import 'features/login/bloc/login/login_bloc.dart';
-import 'features/login/pages/login_screen.dart';
 import 'core/storage/shared_preferences_helper.dart';
 
 void main() async {
@@ -41,7 +43,9 @@ class MyApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: state.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            home: LoginScreen(),
+            initialRoute: RouteConstants.splash,
+            onGenerateRoute: (settings) => RouteGenerator.generateRoute(settings, context),
+            navigatorKey: NavigationService().navigatorKey,
           );
         },
       ),

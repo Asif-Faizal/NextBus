@@ -16,11 +16,11 @@ void showErrorSnackBar(BuildContext context, String message) {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.9),
+              color: Colors.red.withValues(alpha:  0.9),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha: 0.2),
                   blurRadius: 12,
                   offset: const Offset(0, 6),
                 ),
@@ -53,4 +53,6 @@ void showErrorSnackBar(BuildContext context, String message) {
   Future.delayed(const Duration(seconds: 3), () {
     overlayEntry.remove();
   });
+  debugPrint("__________ERROR SNACKBAR____________");
+  debugPrint(message);
 }
