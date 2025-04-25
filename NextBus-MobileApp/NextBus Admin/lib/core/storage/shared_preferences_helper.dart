@@ -11,6 +11,8 @@ class PreferencesManager {
   static const String keyUsername = 'username';
   static const String keyUserType = 'userType';
   static const String keyIsLoggedIn = 'isLoggedIn';
+  static const String keyJWTToken = 'jwtToken';
+  static const String keyRefreshToken = 'refreshToken';
 
   // Default values
   static const bool defaultTheme = false;
@@ -61,10 +63,22 @@ class PreferencesManager {
     await _preferences?.setBool(keyIsLoggedIn, value);
   }
 
+  String get jwtToken => _preferences?.getString(keyJWTToken) ?? '';
+  Future<void> setJWTToken(String value) async {
+    await _preferences?.setString(keyJWTToken, value);
+  }
+
+  String get refreshToken => _preferences?.getString(keyRefreshToken) ?? '';
+  Future<void> setRefreshToken(String value) async {
+    await _preferences?.setString(keyRefreshToken, value);
+  }
+
   Future<void> clearAuthData() async {
     await _preferences?.remove(keyUserID);
     await _preferences?.remove(keyUsername);
     await _preferences?.remove(keyUserType);
     await _preferences?.remove(keyIsLoggedIn);
+    await _preferences?.remove(keyJWTToken);
+    await _preferences?.remove(keyRefreshToken);
   }
 }

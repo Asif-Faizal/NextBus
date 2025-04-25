@@ -32,6 +32,8 @@ class LoginScreen extends StatelessWidget {
             preferencesHelper.setUserID(state.user.id);
             preferencesHelper.setUsername(state.user.username);
             preferencesHelper.setUserType(state.user.role);
+            preferencesHelper.setJWTToken(state.user.token);
+            preferencesHelper.setRefreshToken(state.user.refreshToken);
             preferencesHelper.setIsLoggedIn(true);
             if (context.mounted) {
               context.navigateToAndRemoveUntil(

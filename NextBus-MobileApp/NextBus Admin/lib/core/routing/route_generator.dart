@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:next_bus_admin/core/routing/route_constatnts.dart';
 import 'package:next_bus_admin/features/login/pages/login_screen.dart';
 
+import '../../features/bus/pages/bus_screen.dart';
 import '../../features/dashboard/pages/dashboard_screen.dart';
 import '../../features/splash/pages/splash_screen.dart';
 import '../theme/theme_cubit.dart';
@@ -29,6 +30,11 @@ class RouteGenerator {
       case RouteConstants.dashboard:
         return _buildRoute(
           DashboardScreen(arguments: args as DashboardArguments),
+          settings,
+        );
+      case RouteConstants.bus:
+        return _buildRoute(
+          const BusScreen(),
           settings,
         );
       default:

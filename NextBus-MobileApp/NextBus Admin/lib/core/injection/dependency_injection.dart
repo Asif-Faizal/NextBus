@@ -2,6 +2,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 
+import '../../features/bus/bloc/get_bus_list/get_bus_list_bloc.dart';
+import '../../features/bus/data/bus_datasource.dart';
+import '../../features/bus/data/bus_repo_impl.dart';
+import '../../features/bus/data/bus_request_model.dart';
+import '../../features/bus/domain/bus_repo.dart';
+import '../../features/bus/domain/get_buses.dart';
 import '../../features/login/bloc/login/login_bloc.dart';
 import '../../features/login/data/login/login_datasource.dart';
 import '../../features/login/data/login/login_repo_impl.dart';
@@ -11,19 +17,40 @@ import '../cubit/date_cubit.dart';
 import '../error/exception_handler.dart';
 import '../network/network_info.dart';
 import '../theme/theme_cubit.dart';
+import '../api/api_config.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initDependencyInjection() async {
+  // Core
   sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton(() => Connectivity());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
   sl.registerLazySingleton<ExceptionHandler>(() => ExceptionHandler(sl()));
+  
+  // API Configuration
+  sl.registerLazySingleton<String>(() => ApiConfig.nextBusUrl);
+  
+  // Auth
   sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(sl()));
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(remoteDataSource: sl(), networkInfo: sl()));
   sl.registerLazySingleton<LoginUseCase>(() => LoginUseCase(sl()));
   sl.registerLazySingleton<LoginBloc>(() => LoginBloc(sl()));
 
+  // Theme and Date
   sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
   sl.registerLazySingleton<DateCubit>(() => DateCubit());
+
+  // Bus
+  sl.registerLazySingleton<BusRemoteDataSource>(() => BusRemoteDataSourceImpl(client: sl(), baseUrl: sl<String>()));
+  sl.registerLazySingleton<BusRepository>(() => BusRepositoryImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton<GetBusesUseCase>(() => GetBusesUseCase(sl()));
+  sl.registerLazySingleton<GetBusListBloc>(() => GetBusListBloc(getBusesUseCase: sl()));
+  sl.registerLazySingleton<BusRequestModel>(() => BusRequestModel(
+        busType: '',
+        busSubType: '',
+        busName: '',
+        page: 1,
+        limit: 5,
+      ));
 }
