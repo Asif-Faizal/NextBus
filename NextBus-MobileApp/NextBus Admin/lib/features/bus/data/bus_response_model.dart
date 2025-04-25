@@ -7,6 +7,7 @@ class BusModel extends BusEntity {
     required super.id,
     required super.busName,
     required super.busNumberPlate,
+    required super.status,
     required super.busOwnerName,
     required super.busType,
     required super.busSubType,
@@ -23,6 +24,7 @@ class BusModel extends BusEntity {
         busSubType: json['busSubType'],
         driverName: json['driverName'],
         conductorName: json['conductorName'],
+        status: json['status'],
       );
 }
 

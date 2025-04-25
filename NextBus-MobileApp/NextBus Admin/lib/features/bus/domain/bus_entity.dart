@@ -5,6 +5,7 @@ class BusEntity extends Equatable {
   final String id;
   final String busName;
   final String busNumberPlate;
+  final int status;
   final String busOwnerName;
   final String busType;
   final String busSubType;
@@ -15,6 +16,7 @@ class BusEntity extends Equatable {
     required this.id,
     required this.busName,
     required this.busNumberPlate,
+    required this.status,
     required this.busOwnerName,
     required this.busType,
     required this.busSubType,
@@ -23,5 +25,5 @@ class BusEntity extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, busName, busNumberPlate];
+  List<Object?> get props => [id, busName, busNumberPlate, status];
 }

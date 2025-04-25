@@ -7,46 +7,47 @@ import 'package:next_bus_admin/features/bus/bloc/get_bus_list/get_bus_list_bloc.
 import 'package:next_bus_admin/features/bus/data/bus_request_model.dart';
 
 import '../../../core/theme/theme_cubit.dart';
+import '../../../core/utils/bus_status.dart';
 
-class BusScreen extends StatefulWidget {
+class BusScreen extends StatelessWidget {
   const BusScreen({super.key});
 
-  @override
-  State<BusScreen> createState() => _BusScreenState();
-}
+  static const int _limit = 5;
 
-class _BusScreenState extends State<BusScreen> {
-  final int _limit = 5;
-
-  void _loadBuses(int page) {
-    setState(() {
-    });
+  void _loadBuses(BuildContext context, int page) {
     context.read<GetBusListBloc>().add(
-          FetchBuses(BusRequestModel(
-            busType: '',
-            busSubType: '',
-            busName: '',
-            page: page,
-            limit: _limit,
-          )),
-        );
+      FetchBuses(
+        BusRequestModel(
+          busType: '',
+          busSubType: '',
+          busName: '',
+          page: page,
+          limit: _limit,
+        ),
+      ),
+    );
   }
 
-  void _refreshBuses() {
-    _loadBuses(1);
+  void _refreshBuses(BuildContext context) {
+    _loadBuses(context, 1);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => context.read<GetBusListBloc>()
-        ..add(FetchBuses(BusRequestModel(
-          busType: '',
-          busSubType: '',
-          busName: '',
-          page: 1,
-          limit: _limit,
-        ))),
+      create:
+          (context) =>
+              context.read<GetBusListBloc>()..add(
+                FetchBuses(
+                  BusRequestModel(
+                    busType: '',
+                    busSubType: '',
+                    busName: '',
+                    page: 1,
+                    limit: _limit,
+                  ),
+                ),
+              ),
       child: GradientBackground(
         isDarkMode: context.watch<ThemeCubit>().state.isDarkMode,
         child: Scaffold(
@@ -56,7 +57,7 @@ class _BusScreenState extends State<BusScreen> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.refresh),
-                onPressed: _refreshBuses,
+                onPressed: () => _refreshBuses(context),
               ),
             ],
           ),
@@ -67,15 +68,14 @@ class _BusScreenState extends State<BusScreen> {
               } else if (state is GetBusListError) {
                 return ErrorWidgetView(
                   errorMessage: state.message,
-                  onRetry: _refreshBuses,
+                  onRetry: () => _refreshBuses(context),
                 );
               } else if (state is GetBusListLoaded) {
                 return Column(
                   children: [
-                    Expanded(
-                      child: _buildBusList(state),
-                    ),
-                    _buildPaginationControls(state),
+                    const SizedBox(height: 16),
+                    Expanded(child: _buildBusList(context, state)),
+                    _buildPaginationControls(context, state),
                   ],
                 );
               }
@@ -87,28 +87,46 @@ class _BusScreenState extends State<BusScreen> {
     );
   }
 
-  Widget _buildBusList(GetBusListLoaded state) {
+  Widget _buildBusList(BuildContext context, GetBusListLoaded state) {
     if (state.buses.isEmpty) {
-      return const Center(
-        child: Text('No buses available'),
-      );
+      return const Center(child: Text('No buses available'));
     }
 
     return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       itemCount: state.buses.length,
       itemBuilder: (context, index) {
         final bus = state.buses[index];
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 8,
+            ),
             leading: const Icon(Icons.directions_bus),
             title: Text(bus.busName),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Plate: ${bus.busNumberPlate}'),
-                Text('Type: ${bus.busType}'),
-                Text('Driver: ${bus.driverName}'),
+                Text('Type: ${bus.busType} ${bus.busSubType}'),
+              ],
+            ),
+            trailing: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: getStatusColor(bus.status),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    BusStatusIdentifier.fromValue(bus.status)?.label ?? 'Unknown',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.white,fontWeight: FontWeight.w900),
+                  ),
+                ),
               ],
             ),
           ),
@@ -117,14 +135,17 @@ class _BusScreenState extends State<BusScreen> {
     );
   }
 
-  Widget _buildPaginationControls(GetBusListLoaded state) {
+  Widget _buildPaginationControls(
+    BuildContext context,
+    GetBusListLoaded state,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 4,
             offset: const Offset(0, -2),
           ),
@@ -135,24 +156,24 @@ class _BusScreenState extends State<BusScreen> {
         children: [
           Text(
             'Page ${state.currentPage} of ${state.totalPages}',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Row(
             children: [
               IconButton(
                 icon: const Icon(Icons.chevron_left),
-                onPressed: state.currentPage > 1
-                    ? () => _loadBuses(state.currentPage - 1)
-                    : null,
+                onPressed:
+                    state.currentPage > 1
+                        ? () => _loadBuses(context, state.currentPage - 1)
+                        : null,
                 tooltip: 'Previous Page',
               ),
               IconButton(
                 icon: const Icon(Icons.chevron_right),
-                onPressed: state.hasMore
-                    ? () => _loadBuses(state.currentPage + 1)
-                    : null,
+                onPressed:
+                    state.hasMore
+                        ? () => _loadBuses(context, state.currentPage + 1)
+                        : null,
                 tooltip: 'Next Page',
               ),
             ],
