@@ -7,6 +7,10 @@ class PreferencesManager {
   // Keys
   static const String keyTheme = 'isDarkMode';
   static const String keyLanguage = 'languageCode';
+  static const String keyUserID = 'userID';
+  static const String keyUsername = 'username';
+  static const String keyUserType = 'userType';
+  static const String keyIsLoggedIn = 'isLoggedIn';
 
   // Default values
   static const bool defaultTheme = false;
@@ -34,5 +38,33 @@ class PreferencesManager {
 
   Future<void> setLanguageCode(String value) async {
     await _preferences?.setString(keyLanguage, value);
+  }
+
+  // User preferences
+  String get userID => _preferences?.getString(keyUserID) ?? '';
+  Future<void> setUserID(String value) async {
+    await _preferences?.setString(keyUserID, value);
+  }
+
+  String get username => _preferences?.getString(keyUsername) ?? '';
+  Future<void> setUsername(String value) async {
+    await _preferences?.setString(keyUsername, value);
+  }
+
+  String get userType => _preferences?.getString(keyUserType) ?? '';
+  Future<void> setUserType(String value) async {
+    await _preferences?.setString(keyUserType, value);
+  }
+
+  bool get isLoggedIn => _preferences?.getBool(keyIsLoggedIn) ?? false;
+  Future<void> setIsLoggedIn(bool value) async {
+    await _preferences?.setBool(keyIsLoggedIn, value);
+  }
+
+  Future<void> clearAuthData() async {
+    await _preferences?.remove(keyUserID);
+    await _preferences?.remove(keyUsername);
+    await _preferences?.remove(keyUserType);
+    await _preferences?.remove(keyIsLoggedIn);
   }
 }

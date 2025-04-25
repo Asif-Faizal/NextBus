@@ -5,13 +5,15 @@ import 'package:next_bus_admin/core/routing/routing_extension.dart';
 
 import '../../../core/routing/route_constatnts.dart';
 import '../../../core/routing/routing_arguments.dart';
+import '../../../core/storage/shared_preferences_helper.dart';
 import '../../../core/theme/theme_cubit.dart';
 import '../../../core/widgets/error_snackbar.dart';
 import '../../../core/widgets/gradient_background.dart';
 import '../bloc/login/login_bloc.dart';
 
 class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+  LoginScreen({super.key, this.arguments});
+  final LoginArguments? arguments;
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -22,12 +24,25 @@ class LoginScreen extends StatelessWidget {
     return GradientBackground(
       isDarkMode: isDarkMode,
       child: BlocListener<LoginBloc, LoginState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is LoginFailure) {
             showErrorSnackBar(context, state.message);
-          }
-          else if (state is LoginSuccess) {
-            context.navigateToAndRemoveUntil(RouteConstants.dashboard, arguments: DashboardArguments(username: usernameController.text, userType: state.user.role, userID: state.user.id));
+          } else if (state is LoginSuccess) {
+            final preferencesHelper = await PreferencesManager.getInstance();
+            preferencesHelper.setUserID(state.user.id);
+            preferencesHelper.setUsername(state.user.username);
+            preferencesHelper.setUserType(state.user.role);
+            preferencesHelper.setIsLoggedIn(true);
+            if (context.mounted) {
+              context.navigateToAndRemoveUntil(
+                RouteConstants.dashboard,
+                arguments: DashboardArguments(
+                  username: state.user.username,
+                  userType: state.user.role,
+                  userID: state.user.id,
+                ),
+              );
+            }
           }
         },
         child: SafeArea(
@@ -67,6 +82,9 @@ class LoginScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              if (arguments?.isLoggedIn == true)
+                                Text('Welcome, ${arguments?.username ?? ''}', style: Theme.of(context).textTheme.labelLarge,),
+                              if (arguments?.isLoggedIn == false)
                               TextField(
                                 controller: usernameController,
                                 decoration: InputDecoration(
@@ -111,7 +129,7 @@ class LoginScreen extends StatelessWidget {
                                     onPressed: () {
                                       context.read<LoginBloc>().add(
                                         LoginSubmitted(
-                                          username: usernameController.text,
+                                          username: arguments?.isLoggedIn == true ? arguments?.username ?? '' : usernameController.text,
                                           password: passwordController.text,
                                         ),
                                       );

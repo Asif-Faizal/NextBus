@@ -22,7 +22,10 @@ class RouteGenerator {
       case RouteConstants.splash:
         return _buildRoute(const SplashScreen(), settings);
       case RouteConstants.login:
-        return _buildRoute(LoginScreen(), settings);
+        return _buildRoute(
+          LoginScreen(arguments: args as LoginArguments),
+          settings,
+        );
       case RouteConstants.dashboard:
         return _buildRoute(
           DashboardScreen(arguments: args as DashboardArguments),

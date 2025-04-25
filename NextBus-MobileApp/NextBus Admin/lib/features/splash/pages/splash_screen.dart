@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/routing/route_constatnts.dart';
+import '../../../core/routing/routing_arguments.dart';
 import '../../../core/routing/routing_extension.dart';
+import '../../../core/storage/shared_preferences_helper.dart';
 import '../../../core/theme/theme_cubit.dart';
 import '../../../core/widgets/gradient_background.dart';
 
@@ -21,9 +23,12 @@ class _SplashScreenState extends State<SplashScreen> {
     _navigateToLogin();
   }
 
-  void _navigateToLogin() {
+  void _navigateToLogin() async {
+    final preferencesHelper = await PreferencesManager.getInstance();
+    final isLoggedIn = preferencesHelper.isLoggedIn;
+    final username = preferencesHelper.username;
     Timer(const Duration(seconds: 2), () {
-      context.navigateToAndRemoveUntil(RouteConstants.login);
+      context.navigateToAndRemoveUntil(RouteConstants.login, arguments: LoginArguments(isLoggedIn: isLoggedIn, username: username));
     });
   }
 
