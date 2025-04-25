@@ -38,6 +38,7 @@ class MyHomePage extends StatelessWidget {
                         TextField(
                           decoration: InputDecoration(
                             labelText: 'From',
+                            labelStyle: Theme.of(context).textTheme.labelMedium,
                             prefixIcon: Icon(
                               Icons.location_on,
                               color: isDarkMode ? Colors.white70 : Colors.black54,
@@ -48,6 +49,7 @@ class MyHomePage extends StatelessWidget {
                         TextField(
                           decoration: InputDecoration(
                             labelText: 'To',
+                            labelStyle: Theme.of(context).textTheme.labelMedium,
                             prefixIcon: Icon(
                               Icons.location_on,
                               color: isDarkMode ? Colors.white70 : Colors.black54,
@@ -63,6 +65,7 @@ class MyHomePage extends StatelessWidget {
                           ),
                           decoration: InputDecoration(
                             labelText: 'Select Date and Time',
+                            labelStyle: Theme.of(context).textTheme.labelMedium,
                             prefixIcon: Icon(
                               Icons.calendar_today,
                               color: isDarkMode ? Colors.white70 : Colors.black54,

@@ -104,6 +104,7 @@ class AppTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         backgroundColor: const Color(0xFF008080),
         foregroundColor: Colors.white,
         elevation: 2,
@@ -158,6 +159,7 @@ class AppTheme {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         backgroundColor: const Color(0xFF00B3B3),
         foregroundColor: Colors.white,
         elevation: 2,

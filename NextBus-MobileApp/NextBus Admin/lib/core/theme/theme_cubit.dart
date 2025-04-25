@@ -1,18 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../storage/shared_preferences_helper.dart';
 
 part 'theme_state.dart';
 
 class ThemeCubit extends Cubit<ThemeState> {
-  final SharedPreferences _prefs;
-  static const String _themeKey = 'isDarkMode';
+  ThemeCubit() : super(ThemeState(isDarkMode: PreferencesManager.defaultTheme)) {
+    _initializeTheme();
+  }
 
-  ThemeCubit(this._prefs) : super(ThemeState(isDarkMode: _prefs.getBool(_themeKey) ?? false));
+  Future<void> _initializeTheme() async {
+    final prefsManager = await PreferencesManager.getInstance();
+    emit(ThemeState(isDarkMode: prefsManager.isDarkMode));
+  }
 
-  void toggleTheme() {
+  Future<void> toggleTheme() async {
+    final prefsManager = await PreferencesManager.getInstance();
     final newValue = !state.isDarkMode;
-    _prefs.setBool(_themeKey, newValue);
+    await prefsManager.setDarkMode(newValue);
     emit(ThemeState(isDarkMode: newValue));
   }
 } 
