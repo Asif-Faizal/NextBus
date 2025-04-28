@@ -8,6 +8,7 @@ import 'package:next_bus_admin/features/bus/data/bus_request_model.dart';
 
 import '../../../core/theme/theme_cubit.dart';
 import '../../../core/utils/bus_status.dart';
+import 'bus_details_screen.dart';
 
 class BusScreen extends StatelessWidget {
   const BusScreen({super.key});
@@ -25,7 +26,7 @@ class BusScreen extends StatelessWidget {
     
     context.read<GetBusListBloc>().add(
       FetchBuses(
-        BusRequestModel(
+        BusListRequestModel(
           busType: currentBusType,
           busSubType: currentBusSubType,
           busName: currentBusName,
@@ -268,6 +269,7 @@ class BusScreen extends StatelessWidget {
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: ListTile(
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => BusDetailsScreen(id: bus.id))),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 20,
               vertical: 8,

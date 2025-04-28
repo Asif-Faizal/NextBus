@@ -11,12 +11,22 @@ class BusRepositoryImpl implements BusRepository {
   BusRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Exception, PaginatedBusResponse>> getBuses(BusRequestModel request) async {
+  Future<Either<Exception, PaginatedBusResponse>> getBuses(BusListRequestModel request) async {
     try {
       final result = await remoteDataSource.getBuses(request);
       return Right(result);
     } catch (e) {
       return Left(Exception('Failed to fetch buses'));
+    }
+  }
+
+  @override
+  Future<Either<Exception, BusModel>> getBusById(String id) async {
+    try {
+      final result = await remoteDataSource.getBusById(id);
+      return Right(result);
+    } catch (e) {
+      return Left(Exception('Failed to fetch bus by id'));
     }
   }
 }

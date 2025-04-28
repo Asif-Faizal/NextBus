@@ -2,11 +2,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 
+import '../../features/bus/bloc/get_bus_by_id/get_bus_by_id_bloc.dart';
 import '../../features/bus/bloc/get_bus_list/get_bus_list_bloc.dart';
 import '../../features/bus/data/bus_datasource.dart';
 import '../../features/bus/data/bus_repo_impl.dart';
 import '../../features/bus/data/bus_request_model.dart';
 import '../../features/bus/domain/bus_repo.dart';
+import '../../features/bus/domain/get_bus_by_id.dart';
 import '../../features/bus/domain/get_buses.dart';
 import '../../features/login/bloc/login/login_bloc.dart';
 import '../../features/login/data/login/login_datasource.dart';
@@ -46,11 +48,13 @@ Future<void> initDependencyInjection() async {
   sl.registerLazySingleton<BusRepository>(() => BusRepositoryImpl(remoteDataSource: sl()));
   sl.registerLazySingleton<GetBusesUseCase>(() => GetBusesUseCase(sl()));
   sl.registerLazySingleton<GetBusListBloc>(() => GetBusListBloc(getBusesUseCase: sl()));
-  sl.registerLazySingleton<BusRequestModel>(() => BusRequestModel(
+  sl.registerLazySingleton<BusListRequestModel>(() => BusListRequestModel(
         busType: '',
         busSubType: '',
         busName: '',
         page: 1,
         limit: 5,
       ));
+  sl.registerLazySingleton<GetBusByIdUseCase>(() => GetBusByIdUseCase(sl()));
+  sl.registerLazySingleton<GetBusByIdBloc>(() => GetBusByIdBloc(getBusByIdUseCase: sl()));
 }

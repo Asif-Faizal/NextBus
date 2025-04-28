@@ -13,6 +13,11 @@ class BusModel extends BusEntity {
     required super.busSubType,
     required super.driverName,
     required super.conductorName,
+    required super.createdBy,
+    required super.createdAt,
+    required super.updatedAt,
+    required super.approvedBy,
+    required super.lastModifiedBy,
   });
 
   factory BusModel.fromJson(Map<String, dynamic> json) => BusModel(
@@ -25,6 +30,11 @@ class BusModel extends BusEntity {
         driverName: json['driverName'],
         conductorName: json['conductorName'],
         status: json['status'],
+        createdBy: json['createdBy'],
+        createdAt: json['createdAt'],
+        updatedAt: json['updatedAt'],
+        approvedBy: json['approvedBy'],
+        lastModifiedBy: json['lastModifiedBy'],
       );
 }
 

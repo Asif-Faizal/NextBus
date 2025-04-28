@@ -8,7 +8,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 abstract class BusRemoteDataSource {
-  Future<PaginatedBusResponse> getBuses(BusRequestModel request);
+  Future<PaginatedBusResponse> getBuses(BusListRequestModel request);
+  Future<BusModel> getBusById(String id);
 }
 
 class BusRemoteDataSourceImpl implements BusRemoteDataSource {
@@ -18,7 +19,7 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
   BusRemoteDataSourceImpl({required this.client, required this.baseUrl});
 
   @override
-  Future<PaginatedBusResponse> getBuses(BusRequestModel request) async {
+  Future<PaginatedBusResponse> getBuses(BusListRequestModel request) async {
     try {
       PreferencesManager preferencesManager =
           await PreferencesManager.getInstance();
@@ -34,6 +35,31 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
 
     if (response.statusCode == 200) {
       return PaginatedBusResponse.fromJson(json.decode(response.body));
+      } else {
+        throw Exception('Failed to load buses');
+      }
+    } catch (e) {
+      throw Exception('Failed to load buses: $e');
+    }
+  }
+
+  @override
+  Future<BusModel> getBusById(String id) async {
+    try {
+      PreferencesManager preferencesManager =
+          await PreferencesManager.getInstance();
+      final token = preferencesManager.jwtToken;
+    final uri = Uri.parse(
+      '${ApiConfig.nextBusUrl}/buses/$id',
+    );
+    final response = await client.get(
+      uri,
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      debugPrint(response.body);
+
+    if (response.statusCode == 200) {
+      return BusModel.fromJson(json.decode(response.body));
       } else {
         throw Exception('Failed to load buses');
       }

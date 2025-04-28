@@ -8,7 +8,7 @@ abstract class GetBusListEvent extends Equatable {
 }
 
 class FetchBuses extends GetBusListEvent {
-  final BusRequestModel request;
+  final BusListRequestModel request;
 
   const FetchBuses(this.request);
 

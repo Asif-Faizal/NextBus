@@ -9,7 +9,7 @@ class GetBusesUseCase {
 
   GetBusesUseCase(this.repository);
 
-  Future<Either<Exception, PaginatedBusResponse>> call(BusRequestModel request) {
+  Future<Either<Exception, PaginatedBusResponse>> call(BusListRequestModel request) {
     return repository.getBuses(request);
   }
 }

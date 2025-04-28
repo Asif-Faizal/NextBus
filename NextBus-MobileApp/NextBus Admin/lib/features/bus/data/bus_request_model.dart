@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 
-class BusRequestModel extends Equatable {
+class BusListRequestModel extends Equatable {
   final String busType;
   final String busSubType;
   final String busName;
   final int page;
   final int limit;
 
-  const BusRequestModel({
+  const BusListRequestModel({
     required this.busType,
     required this.busSubType,
     required this.busName,
