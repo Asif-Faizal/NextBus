@@ -53,6 +53,82 @@ class BusDetailsScreen extends StatelessWidget {
             return const SizedBox.shrink();
           },
         ),
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.transparent,
+          child: BlocBuilder<GetBusByIdBloc, GetBusByIdState>(
+            builder: (context, state) {
+              if (state is GetBusByIdLoaded) {
+                if (state.bus.status == BusStatusIdentifier.approved.value) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          child: const Text('Edit Bus'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          child: const Text('Delete Bus'),
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (state.bus.status ==
+                    BusStatusIdentifier.waitingForApproval.value) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          child: const Text('Reject Bus'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          child: const Text('Approve Bus'),
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (state.bus.status ==
+                    BusStatusIdentifier.waitingForEdit.value) {
+                  return ElevatedButton(
+                    onPressed: () {},
+                    child: const Text('View Edit Request'),
+                  );
+                } else if (state.bus.status ==
+                    BusStatusIdentifier.waitingForDelete.value) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          child: const Text('Reject Delete'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          child: const Text('Approve Delete'),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              }
+              return SizedBox.shrink();
+            },
+          ),
+        ),
       ),
     );
   }
@@ -93,8 +169,8 @@ class BusDetailsScreen extends StatelessWidget {
                   Text(
                     bus.busName,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
                     bus.busNumberPlate,
@@ -114,9 +190,9 @@ class BusDetailsScreen extends StatelessWidget {
                       BusStatusIdentifier.fromValue(bus.status)?.label ??
                           'Unknown',
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -177,21 +253,9 @@ class BusDetailsScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const Divider(),
-            _buildInfoRow(
-              context,
-              'Created By',
-              bus.createdBy ?? 'N/A',
-            ),
-            _buildInfoRow(
-              context,
-              'Created At',
-              _formatDate(bus.createdAt),
-            ),
-            _buildInfoRow(
-              context,
-              'Updated At',
-              _formatDate(bus.updatedAt),
-            ),
+            _buildInfoRow(context, 'Created By', bus.createdBy ?? 'N/A'),
+            _buildInfoRow(context, 'Created At', _formatDate(bus.createdAt)),
+            _buildInfoRow(context, 'Updated At', _formatDate(bus.updatedAt)),
           ],
         ),
       ),
@@ -217,9 +281,7 @@ class BusDetailsScreen extends StatelessWidget {
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
-                fontWeight: FontWeight.w500,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w500),
             ),
           ),
         ],
@@ -229,7 +291,7 @@ class BusDetailsScreen extends StatelessWidget {
 
   String _formatDate(String? dateString) {
     if (dateString == null) return 'N/A';
-    
+
     try {
       final date = DateTime.parse(dateString);
       return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}';
