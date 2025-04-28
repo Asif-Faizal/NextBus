@@ -8,6 +8,7 @@ import 'package:next_bus_admin/features/bus/data/bus_request_model.dart';
 
 import '../../../core/theme/theme_cubit.dart';
 import '../../../core/utils/bus_status.dart';
+import 'add_bus_screen.dart';
 import 'bus_details_screen.dart';
 
 class BusScreen extends StatelessWidget {
@@ -165,19 +166,22 @@ class BusScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: const Text('Bus List'),
           actions: [
-            IconButton(
+            ElevatedButton.icon(
+              icon: const Icon(Icons.add),
+              label: const Text('Add Bus'),
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddBusScreen())),
+            ),
+            const SizedBox(width: 10),
+            ElevatedButton.icon(
               icon: const Icon(Icons.filter_list),
+              label: const Text('Filter'),
               onPressed: () => _showFilterDialog(context),
             ),
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () => _refreshBuses(context),
-            ),
+            const SizedBox(width: 20),
           ],
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(50),
+            preferredSize: Size.fromHeight(55),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextFormField(
@@ -261,54 +265,59 @@ class BusScreen extends StatelessWidget {
       return const Center(child: Text('No buses available'));
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      itemCount: state.buses.length,
-      itemBuilder: (context, index) {
-        final bus = state.buses[index];
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: ListTile(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => BusDetailsScreen(id: bus.id))),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 8,
-            ),
-            leading: const Icon(Icons.directions_bus),
-            title: Text(bus.busName),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Plate: ${bus.busNumberPlate}'),
-                Text('Type: ${bus.busType} ${bus.busSubType}'),
-              ],
-            ),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: getStatusColor(bus.status),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    BusStatusIdentifier.fromValue(bus.status)?.label ??
-                        'Unknown',
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
+    return RefreshIndicator(
+      onRefresh: () async {
+        _refreshBuses(context);
+      },
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        itemCount: state.buses.length,
+        itemBuilder: (context, index) {
+          final bus = state.buses[index];
+          return Card(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: ListTile(
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => BusDetailsScreen(id: bus.id))),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 8,
+              ),
+              leading: const Icon(Icons.directions_bus),
+              title: Text(bus.busName),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Plate: ${bus.busNumberPlate}'),
+                  Text('Type: ${bus.busType} ${bus.busSubType}'),
+                ],
+              ),
+              trailing: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: getStatusColor(bus.status),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      BusStatusIdentifier.fromValue(bus.status)?.label ??
+                          'Unknown',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

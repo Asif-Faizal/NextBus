@@ -2,11 +2,16 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 
+import '../../features/bus/bloc/add_new_bus/add_new_bus_bloc.dart';
 import '../../features/bus/bloc/get_bus_by_id/get_bus_by_id_bloc.dart';
 import '../../features/bus/bloc/get_bus_list/get_bus_list_bloc.dart';
+import '../../features/bus/cubits/bus_sub_type_cubit.dart';
+import '../../features/bus/cubits/bus_type_cubit.dart';
+import '../../features/bus/cubits/dropdown_selection_cubit.dart';
 import '../../features/bus/data/bus_datasource.dart';
 import '../../features/bus/data/bus_repo_impl.dart';
 import '../../features/bus/data/bus_request_model.dart';
+import '../../features/bus/domain/add_bus.dart';
 import '../../features/bus/domain/bus_repo.dart';
 import '../../features/bus/domain/get_bus_by_id.dart';
 import '../../features/bus/domain/get_buses.dart';
@@ -29,6 +34,7 @@ Future<void> initDependencyInjection() async {
   sl.registerLazySingleton(() => Connectivity());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
   sl.registerLazySingleton<ExceptionHandler>(() => ExceptionHandler(sl()));
+  sl.registerLazySingleton<DropdownSelectionCubit>(() => DropdownSelectionCubit());
   
   // API Configuration
   sl.registerLazySingleton<String>(() => ApiConfig.nextBusUrl);
@@ -57,4 +63,8 @@ Future<void> initDependencyInjection() async {
       ));
   sl.registerLazySingleton<GetBusByIdUseCase>(() => GetBusByIdUseCase(sl()));
   sl.registerLazySingleton<GetBusByIdBloc>(() => GetBusByIdBloc(getBusByIdUseCase: sl()));
+  sl.registerLazySingleton<AddBusUsecase>(() => AddBusUsecase(repository: sl()));
+  sl.registerLazySingleton<AddNewBusBloc>(() => AddNewBusBloc(addBusUsecase: sl()));
+  sl.registerLazySingleton<BusTypeCubit>(() => BusTypeCubit(globalCubit: sl()));
+  sl.registerLazySingleton<BusSubTypeCubit>(() => BusSubTypeCubit(globalCubit: sl()));
 }

@@ -9,8 +9,12 @@ import 'core/cubit/date_cubit.dart';
 import 'core/routing/navigation_service.dart';
 import 'core/routing/route_constatnts.dart';
 import 'core/routing/route_generator.dart';
+import 'features/bus/bloc/add_new_bus/add_new_bus_bloc.dart';
 import 'features/bus/bloc/get_bus_by_id/get_bus_by_id_bloc.dart';
 import 'features/bus/bloc/get_bus_list/get_bus_list_bloc.dart';
+import 'features/bus/cubits/bus_sub_type_cubit.dart';
+import 'features/bus/cubits/bus_type_cubit.dart';
+import 'features/bus/cubits/dropdown_selection_cubit.dart';
 import 'features/login/bloc/login/login_bloc.dart';
 import 'core/storage/shared_preferences_helper.dart';
 
@@ -39,6 +43,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => sl<LoginBloc>()),
         BlocProvider(create: (context) => sl<GetBusListBloc>()),
         BlocProvider(create: (context) => sl<GetBusByIdBloc>()),
+        BlocProvider(create: (context) => sl<AddNewBusBloc>()),
+        BlocProvider(create: (context) => sl<DropdownSelectionCubit>()),
+        BlocProvider(create: (context) => sl<BusTypeCubit>()),
+        BlocProvider(create: (context) => sl<BusSubTypeCubit>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {
