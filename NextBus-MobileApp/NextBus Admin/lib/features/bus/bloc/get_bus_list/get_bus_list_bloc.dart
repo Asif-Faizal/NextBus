@@ -12,18 +12,41 @@ class GetBusListBloc extends Bloc<GetBusListEvent, GetBusListState> {
   final GetBusesUseCase getBusesUseCase;
   int _currentPage = 1;
   int _totalPages = 1;
+  String _busType = '';
+  String _busSubType = '';
+  String _busName = '';
   
   GetBusListBloc({required this.getBusesUseCase}) : super(GetBusListInitial()) {
     on<FetchBuses>((event, emit) async {
+      // Save the filter parameters
+      _busType = event.request.busType;
+      _busSubType = event.request.busSubType;
+      _busName = event.request.busName;
+      
       if (event.request.page == 1) {
-        emit(GetBusListLoading());
+        emit(GetBusListLoading(
+          busType: _busType,
+          busSubType: _busSubType,
+          busName: _busName,
+        ));
       } else {
-        emit(GetBusListLoading(buses: (state as GetBusListLoaded).buses));
+        final currentState = state as GetBusListLoaded;
+        emit(GetBusListLoading(
+          buses: currentState.buses,
+          busType: _busType,
+          busSubType: _busSubType,
+          busName: _busName,
+        ));
       }
       
       final result = await getBusesUseCase(event.request);
       result.fold(
-        (error) => emit(GetBusListError(error.toString())),
+        (error) => emit(GetBusListError(
+          error.toString(),
+          busType: _busType,
+          busSubType: _busSubType,
+          busName: _busName,
+        )),
         (response) {
           _currentPage = response.page;
           _totalPages = response.totalPages;
@@ -34,10 +57,18 @@ class GetBusListBloc extends Bloc<GetBusListEvent, GetBusListState> {
             response.data,
             currentPage: _currentPage,
             totalPages: _totalPages,
-            hasMore: hasMore
+            hasMore: hasMore,
+            busType: _busType,
+            busSubType: _busSubType,
+            busName: _busName,
           ));
         },
       );
     });
   }
+  
+  // Getters for the current filter values
+  String get busType => _busType;
+  String get busSubType => _busSubType;
+  String get busName => _busName;
 }
