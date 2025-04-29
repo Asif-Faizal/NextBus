@@ -5,11 +5,15 @@ import 'package:next_bus_admin/core/widgets/error_widget.dart';
 import 'package:next_bus_admin/core/widgets/loading_widget.dart';
 import 'package:next_bus_admin/core/theme/theme_cubit.dart';
 import 'package:next_bus_admin/core/utils/bus_status.dart';
+import 'package:next_bus_admin/features/bus/bloc/get_bus_list/get_bus_list_bloc.dart';
 
 import '../../../core/widgets/error_snackbar.dart';
 import '../bloc/approve_bus/approve_bus_bloc.dart';
+import '../bloc/edit_bus/edit_bus_bloc.dart';
 import '../bloc/get_bus_by_id/get_bus_by_id_bloc.dart';
+import '../data/models/bus_request_model.dart';
 import '../domain/bus_entity.dart';
+import '../widget/edit_bus_form.dart';
 
 class BusDetailsScreen extends StatelessWidget {
   final String id;
@@ -38,14 +42,50 @@ class BusDetailsScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: BlocListener<ApproveBusBloc, ApproveBusState>(
-          listener: (context, state) {
-            if (state is ApproveBusSuccess) {
-              context.read<GetBusByIdBloc>().add(FetchBusById(id));
-            } else if (state is ApproveBusFailure) {
-              showErrorSnackBar(context, state.message);
-            }
-          },
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<ApproveBusBloc, ApproveBusState>(
+              listener: (context, state) {
+                if (state is ApproveBusSuccess) {
+                  context.read<GetBusByIdBloc>().add(FetchBusById(id));
+                  context.read<GetBusListBloc>().add(
+                    FetchBuses(
+                      BusListRequestModel(
+                        busName: '',
+                        busType: '',
+                        busSubType: '',
+                        page: 1,
+                        limit: 5,
+                      ),
+                    ),
+                  );
+                } else if (state is ApproveBusFailure) {
+                  showErrorSnackBar(context, state.message);
+                }
+              },
+            ),
+            BlocListener<EditBusBloc, EditBusState>(
+              listener: (context, state) {
+                if (state is EditBusLoaded) {
+                  Navigator.pop(context);
+                  context.read<GetBusByIdBloc>().add(FetchBusById(id));
+                  context.read<GetBusListBloc>().add(
+                    FetchBuses(
+                      BusListRequestModel(
+                        busName: '',
+                        busType: '',
+                        busSubType: '',
+                        page: 1,
+                        limit: 5,
+                      ),
+                    ),
+                  );
+                } else if (state is EditBusError) {
+                  showErrorSnackBar(context, state.message);
+                }
+              },
+            ),
+          ],
           child: BlocBuilder<GetBusByIdBloc, GetBusByIdState>(
             builder: (context, state) {
               if (state is GetBusByIdInitial || state is GetBusByIdLoading) {
@@ -75,7 +115,16 @@ class BusDetailsScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (context) => EditBusForm(
+                                bus: state.bus,
+                                readOnly: false,
+                              ),
+                            );
+                          },
                           child: const Text('Edit Bus'),
                         ),
                       ),
@@ -112,9 +161,21 @@ class BusDetailsScreen extends StatelessWidget {
                   );
                 } else if (state.bus.status ==
                     BusStatusIdentifier.waitingForEdit.value) {
-                  return ElevatedButton(
-                    onPressed: () {},
-                    child: const Text('View Edit Request'),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (context) => EditBusForm(
+                            bus: state.bus,
+                            readOnly: true,
+                          ),
+                        );
+                      },
+                      child: const Text('View Edit Request'),
+                    ),
                   );
                 } else if (state.bus.status ==
                     BusStatusIdentifier.waitingForDelete.value) {

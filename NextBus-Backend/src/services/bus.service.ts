@@ -313,4 +313,26 @@ export class BusService {
       deletes: deletes.map(b => b.toObject()),
     };
   }
+
+  async getEditRequest(busId: string): Promise<Partial<IBus>> {
+    const [bus, history] = await Promise.all([
+      this.busRepository.findById(busId),
+      this.busRepository.findBusHistory(busId),
+    ]);
+
+    if (!bus) {
+      throw new Error('Bus not found');
+    }
+
+    if (bus.status !== BusStatus.WAITING_FOR_EDIT) {
+      throw new Error('Bus is not waiting for edit approval');
+    }
+
+    const latestHistory = history[0];
+    if (!latestHistory) {
+      throw new Error('No edit history found');
+    }
+
+    return latestHistory.newData;
+  }
 }

@@ -147,4 +147,14 @@ export class BusController {
       res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to get pending modifications' });
     }
   }
+
+  async getEditRequest(req: Request, res: Response): Promise<void> {
+    try {
+      const { busId } = req.params;
+      const editRequest = await this.busService.getEditRequest(busId);
+      res.json(editRequest);
+    } catch (error) {
+      res.status(400).json({ message: error instanceof Error ? error.message : 'Failed to get edit request' });
+    }
+  }
 } 

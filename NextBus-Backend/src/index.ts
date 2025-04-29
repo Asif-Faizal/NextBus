@@ -57,6 +57,7 @@ app.get('/api/protected', authMiddleware, (req, res) => {
 app.get('/api/buses', authMiddleware, (req, res) => busController.getAllBuses(req, res));
 app.get('/api/buses/pending', authMiddleware, (req, res) => busController.getPendingModifications(req, res));
 app.get('/api/buses/:busId/history', authMiddleware, (req, res) => busController.getBusHistory(req, res));
+app.get('/api/buses/:busId/edit-request', authMiddleware, (req, res) => busController.getEditRequest(req, res));
 app.get('/api/buses/:busId', authMiddleware, (req, res) => busController.getBusById(req, res));
 app.post('/api/buses', authMiddleware, (req, res) => busController.createBus(req, res));
 app.post('/api/buses/:busId/approve', authMiddleware, (req, res) => busController.approveBus(req, res));
