@@ -17,6 +17,7 @@ abstract class BusRemoteDataSource {
   Future<AddBusModel> getEditRequest(String id);
   Future<BusModel> approveEditRequest(String id);
   Future<BusModel> rejectApproval(String id);
+  Future<BusModel> deleteBus(String id);
 }
 
 class BusRemoteDataSourceImpl implements BusRemoteDataSource {
@@ -247,6 +248,31 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
       }
     } catch (e) {
       throw Exception('Failed to reject edit request: $e');
+    }
+  }
+
+  @override
+  Future<BusModel> deleteBus(String id) async {
+    try {
+      PreferencesManager preferencesManager =
+          await PreferencesManager.getInstance();
+      final token = preferencesManager.jwtToken;
+      final uri = Uri.parse('${ApiConfig.nextBusUrl}/buses/$id/delete');
+      final response = await client.post(
+        uri,
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      debugPrint(response.body);
+      final responseBody = json.decode(response.body);
+      final message = responseBody['message'];
+
+      if (response.statusCode == 200) {
+        return BusModel.fromJson(responseBody);
+      } else {
+        throw Exception(message);
+      }
+    } catch (e) {
+      throw Exception('Failed to delete bus: $e');
     }
   }
 }

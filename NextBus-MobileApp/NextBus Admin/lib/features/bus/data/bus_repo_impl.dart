@@ -90,4 +90,14 @@ class BusRepositoryImpl implements BusRepository {
       return Left(Exception(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Exception, BusModel>> deleteBus(String id) async {
+    try {
+      final result = await remoteDataSource.deleteBus(id);
+      return Right(result);
+    } catch (e) {
+      return Left(Exception(e.toString()));
+    }
+  }
 }

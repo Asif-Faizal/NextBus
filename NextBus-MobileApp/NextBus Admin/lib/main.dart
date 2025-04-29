@@ -12,6 +12,7 @@ import 'core/routing/route_generator.dart';
 import 'features/bus/bloc/add_new_bus/add_new_bus_bloc.dart';
 import 'features/bus/bloc/approve_bus/approve_bus_bloc.dart';
 import 'features/bus/bloc/approve_edit/approve_edit_bloc.dart';
+import 'features/bus/bloc/delete_bus/delete_bus_bloc.dart';
 import 'features/bus/bloc/edit_bus/edit_bus_bloc.dart';
 import 'features/bus/bloc/get_bus_by_id/get_bus_by_id_bloc.dart';
 import 'features/bus/bloc/get_bus_list/get_bus_list_bloc.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => sl<GetEditRequestBloc>()),
         BlocProvider(create: (context) => sl<ApproveEditBloc>()),
         BlocProvider(create: (context) => sl<RejectApprovalBloc>()),
+        BlocProvider(create: (context) => sl<DeleteBusBloc>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {

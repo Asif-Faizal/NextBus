@@ -10,6 +10,7 @@ import 'package:next_bus_admin/features/bus/bloc/get_bus_list/get_bus_list_bloc.
 import '../../../core/widgets/error_snackbar.dart';
 import '../bloc/approve_bus/approve_bus_bloc.dart';
 import '../bloc/approve_edit/approve_edit_bloc.dart';
+import '../bloc/delete_bus/delete_bus_bloc.dart';
 import '../bloc/edit_bus/edit_bus_bloc.dart';
 import '../bloc/get_bus_by_id/get_bus_by_id_bloc.dart';
 import '../bloc/reject_approval/reject_approval_bloc.dart';
@@ -129,6 +130,26 @@ class BusDetailsScreen extends StatelessWidget {
                 }
               },
             ),
+            BlocListener<DeleteBusBloc, DeleteBusState>(
+              listener: (context, state) {
+                if (state is DeleteBusSuccess) {
+                  context.read<GetBusByIdBloc>().add(FetchBusById(id));
+                  context.read<GetBusListBloc>().add(
+                    FetchBuses(
+                      BusListRequestModel(
+                        busName: '',
+                        busType: '',
+                        busSubType: '',
+                        page: 1,
+                        limit: 5,
+                      ),
+                    ),
+                  );
+                } else if (state is DeleteBusFailure) {
+                  showErrorSnackBar(context, state.message);
+                }
+              },
+            ),
           ],
           child: BlocBuilder<GetBusByIdBloc, GetBusByIdState>(
             builder: (context, state) {
@@ -175,7 +196,11 @@ class BusDetailsScreen extends StatelessWidget {
                       const SizedBox(width: 10),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            context.read<DeleteBusBloc>().add(
+                              DeleteBus(id: state.bus.id),
+                            );
+                          },
                           child: const Text('Delete Bus'),
                         ),
                       ),
@@ -232,14 +257,38 @@ class BusDetailsScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDialog(context: context, builder: (context) => AlertDialog(
+                              title: const Text('Reject Delete'),
+                              content: const Text('Are you sure you want to reject the delete request?'),
+                              actions: [
+                                ElevatedButton(onPressed: () {
+                                  context.read<RejectApprovalBloc>().add(
+                                    RejectApproval(id: state.bus.id),
+                                  );
+                                }, child: const Text('Reject')),
+                              ],
+                            ));
+                          },
                           child: const Text('Reject Delete'),
                         ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDialog(context: context, builder: (context) => AlertDialog(
+                              title: const Text('Approve Delete'),
+                              content: const Text('Are you sure you want to approve the delete request?'),
+                              actions: [
+                                ElevatedButton(onPressed: () {
+                                  context.read<ApproveBusBloc>().add(
+                                    ApproveBus(id: state.bus.id),
+                                  );
+                                }, child: const Text('Delete')),
+                              ],
+                            ));
+                          },
                           child: const Text('Approve Delete'),
                         ),
                       ),
