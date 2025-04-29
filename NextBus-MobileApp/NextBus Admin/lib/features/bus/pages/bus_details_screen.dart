@@ -6,6 +6,8 @@ import 'package:next_bus_admin/core/widgets/loading_widget.dart';
 import 'package:next_bus_admin/core/theme/theme_cubit.dart';
 import 'package:next_bus_admin/core/utils/bus_status.dart';
 
+import '../../../core/widgets/error_snackbar.dart';
+import '../bloc/approve_bus/approve_bus_bloc.dart';
 import '../bloc/get_bus_by_id/get_bus_by_id_bloc.dart';
 import '../domain/bus_entity.dart';
 
@@ -36,22 +38,31 @@ class BusDetailsScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: BlocBuilder<GetBusByIdBloc, GetBusByIdState>(
-          builder: (context, state) {
-            if (state is GetBusByIdInitial || state is GetBusByIdLoading) {
-              return const LoadingWidget();
-            } else if (state is GetBusByIdError) {
-              return ErrorWidgetView(
-                errorMessage: state.message,
-                onRetry: () {
-                  context.read<GetBusByIdBloc>().add(FetchBusById(id));
-                },
-              );
-            } else if (state is GetBusByIdLoaded) {
-              return _buildBusDetails(context, state.bus);
+        body: BlocListener<ApproveBusBloc, ApproveBusState>(
+          listener: (context, state) {
+            if (state is ApproveBusSuccess) {
+              context.read<GetBusByIdBloc>().add(FetchBusById(id));
+            } else if (state is ApproveBusFailure) {
+              showErrorSnackBar(context, state.message);
             }
-            return const SizedBox.shrink();
           },
+          child: BlocBuilder<GetBusByIdBloc, GetBusByIdState>(
+            builder: (context, state) {
+              if (state is GetBusByIdInitial || state is GetBusByIdLoading) {
+                return const LoadingWidget();
+              } else if (state is GetBusByIdError) {
+                return ErrorWidgetView(
+                  errorMessage: state.message,
+                  onRetry: () {
+                    context.read<GetBusByIdBloc>().add(FetchBusById(id));
+                  },
+                );
+              } else if (state is GetBusByIdLoaded) {
+                return _buildBusDetails(context, state.bus);
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ),
         bottomNavigationBar: BottomAppBar(
           color: Colors.transparent,
@@ -79,23 +90,25 @@ class BusDetailsScreen extends StatelessWidget {
                   );
                 } else if (state.bus.status ==
                     BusStatusIdentifier.waitingForApproval.value) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Text('Reject Bus'),
-                        ),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.read<ApproveBusBloc>().add(ApproveBus(id));
+                      },
+                      child: BlocBuilder<ApproveBusBloc, ApproveBusState>(
+                        builder: (context, state) {
+                          if (state is ApproveBusLoading) {
+                            return const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return const Text('Approve Bus');
+                        },
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Text('Approve Bus'),
-                        ),
-                      ),
-                    ],
+                    ),
                   );
                 } else if (state.bus.status ==
                     BusStatusIdentifier.waitingForEdit.value) {

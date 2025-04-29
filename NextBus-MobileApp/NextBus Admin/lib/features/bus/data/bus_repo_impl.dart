@@ -40,4 +40,14 @@ class BusRepositoryImpl implements BusRepository {
       return Left(Exception('Failed to add bus'));
     }
   }
+
+  @override
+  Future<Either<Exception, BusModel>> approveBus(String id) async {
+    try {
+      final result = await remoteDataSource.approveBus(id);
+      return Right(result);
+    } catch (e) {
+      return Left(Exception(e.toString()));
+    }
+  }
 }

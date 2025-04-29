@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 
 import '../../features/bus/bloc/add_new_bus/add_new_bus_bloc.dart';
+import '../../features/bus/bloc/approve_bus/approve_bus_bloc.dart';
 import '../../features/bus/bloc/get_bus_by_id/get_bus_by_id_bloc.dart';
 import '../../features/bus/bloc/get_bus_list/get_bus_list_bloc.dart';
 import '../../features/bus/cubits/bus_sub_type_cubit.dart';
@@ -13,6 +14,7 @@ import '../../features/bus/data/bus_repo_impl.dart';
 import '../../features/bus/data/models/bus_request_model.dart';
 import '../../features/bus/domain/usecases/add_bus.dart';
 import '../../features/bus/domain/bus_repo.dart';
+import '../../features/bus/domain/usecases/approve_bus.dart';
 import '../../features/bus/domain/usecases/get_bus_by_id.dart';
 import '../../features/bus/domain/usecases/get_buses.dart';
 import '../../features/login/bloc/login/login_bloc.dart';
@@ -67,4 +69,6 @@ Future<void> initDependencyInjection() async {
   sl.registerLazySingleton<AddNewBusBloc>(() => AddNewBusBloc(addBusUsecase: sl()));
   sl.registerLazySingleton<BusTypeCubit>(() => BusTypeCubit(globalCubit: sl()));
   sl.registerLazySingleton<BusSubTypeCubit>(() => BusSubTypeCubit(globalCubit: sl()));
+  sl.registerLazySingleton<ApproveBusUsecase>(() => ApproveBusUsecase(repository: sl()));
+  sl.registerLazySingleton<ApproveBusBloc>(() => ApproveBusBloc(approveBusUsecase: sl()));
 }

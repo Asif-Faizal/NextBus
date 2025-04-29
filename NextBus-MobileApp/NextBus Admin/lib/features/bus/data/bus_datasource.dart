@@ -12,6 +12,7 @@ abstract class BusRemoteDataSource {
   Future<PaginatedBusResponse> getBuses(BusListRequestModel request);
   Future<BusModel> getBusById(String id);
   Future<BusModel> addBus(AddBusModel request);
+  Future<BusModel> approveBus(String id);
 }
 
 class BusRemoteDataSourceImpl implements BusRemoteDataSource {
@@ -103,6 +104,33 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
       }
     } catch (e) {
       throw Exception('Failed to add bus: $e');
+    }
+  }
+
+  @override
+  Future<BusModel> approveBus(String id) async {
+    try {
+      PreferencesManager preferencesManager =
+          await PreferencesManager.getInstance();
+      final token = preferencesManager.jwtToken;
+      final uri = Uri.parse(
+        '${ApiConfig.nextBusUrl}/buses/$id/approve',
+      );
+      final response = await client.post(
+        uri,
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      debugPrint(response.body);
+      final responseBody = json.decode(response.body);
+      final message = responseBody['message'];
+
+      if (response.statusCode == 200) {
+        return BusModel.fromJson(responseBody);
+      } else {
+        throw Exception(message);
+      }
+    } catch (e) {
+      throw Exception('Failed to approve bus: $e');
     }
   }
 }
