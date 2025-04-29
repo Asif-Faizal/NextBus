@@ -16,6 +16,7 @@ abstract class BusRemoteDataSource {
   Future<BusModel> editBus(String id, AddBusModel request);
   Future<AddBusModel> getEditRequest(String id);
   Future<BusModel> approveEditRequest(String id);
+  Future<BusModel> rejectApproval(String id);
 }
 
 class BusRemoteDataSourceImpl implements BusRemoteDataSource {
@@ -30,17 +31,17 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
       PreferencesManager preferencesManager =
           await PreferencesManager.getInstance();
       final token = preferencesManager.jwtToken;
-    final uri = Uri.parse(
-      '${ApiConfig.nextBusUrl}/buses',
-    ).replace(queryParameters: request.toQueryParameters());
-    final response = await client.get(
-      uri,
+      final uri = Uri.parse(
+        '${ApiConfig.nextBusUrl}/buses',
+      ).replace(queryParameters: request.toQueryParameters());
+      final response = await client.get(
+        uri,
         headers: {'Authorization': 'Bearer $token'},
       );
       debugPrint(response.body);
 
-    if (response.statusCode == 200) {
-      return PaginatedBusResponse.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        return PaginatedBusResponse.fromJson(json.decode(response.body));
       } else {
         throw Exception('Failed to load buses');
       }
@@ -55,17 +56,15 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
       PreferencesManager preferencesManager =
           await PreferencesManager.getInstance();
       final token = preferencesManager.jwtToken;
-    final uri = Uri.parse(
-      '${ApiConfig.nextBusUrl}/buses/$id',
-    );
-    final response = await client.get(
-      uri,
+      final uri = Uri.parse('${ApiConfig.nextBusUrl}/buses/$id');
+      final response = await client.get(
+        uri,
         headers: {'Authorization': 'Bearer $token'},
       );
       debugPrint(response.body);
 
-    if (response.statusCode == 200) {
-      return BusModel.fromJson(json.decode(response.body));
+      if (response.statusCode == 200) {
+        return BusModel.fromJson(json.decode(response.body));
       } else {
         throw Exception('Failed to load buses');
       }
@@ -80,14 +79,12 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
       PreferencesManager preferencesManager =
           await PreferencesManager.getInstance();
       final token = preferencesManager.jwtToken;
-      final uri = Uri.parse(
-        '${ApiConfig.nextBusUrl}/buses',
-      );
-      
+      final uri = Uri.parse('${ApiConfig.nextBusUrl}/buses');
+
       // Convert request to proper JSON string
       final jsonBody = json.encode(request.toJson());
       debugPrint('Request body: $jsonBody');
-      
+
       final response = await client.post(
         uri,
         headers: {
@@ -96,7 +93,7 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
         },
         body: jsonBody,
       );
-      
+
       debugPrint('Response status code: ${response.statusCode}');
       debugPrint('Response body: ${response.body}');
 
@@ -116,9 +113,7 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
       PreferencesManager preferencesManager =
           await PreferencesManager.getInstance();
       final token = preferencesManager.jwtToken;
-      final uri = Uri.parse(
-        '${ApiConfig.nextBusUrl}/buses/$id/approve',
-      );
+      final uri = Uri.parse('${ApiConfig.nextBusUrl}/buses/$id/approve');
       final response = await client.post(
         uri,
         headers: {'Authorization': 'Bearer $token'},
@@ -143,14 +138,12 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
       PreferencesManager preferencesManager =
           await PreferencesManager.getInstance();
       final token = preferencesManager.jwtToken;
-      final uri = Uri.parse(
-        '${ApiConfig.nextBusUrl}/buses/$id/edit',
-      );
-      
+      final uri = Uri.parse('${ApiConfig.nextBusUrl}/buses/$id/edit');
+
       // Convert request to proper JSON string
       final jsonBody = json.encode(request.toJson());
       debugPrint('Edit Bus Request body: $jsonBody');
-      
+
       final response = await client.post(
         uri,
         headers: {
@@ -159,10 +152,10 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
         },
         body: jsonBody,
       );
-      
+
       debugPrint('Edit Bus Response status code: ${response.statusCode}');
       debugPrint('Edit Bus Response body: ${response.body}');
-      
+
       final responseBody = json.decode(response.body);
       final message = responseBody['message'];
 
@@ -182,10 +175,8 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
       PreferencesManager preferencesManager =
           await PreferencesManager.getInstance();
       final token = preferencesManager.jwtToken;
-      final uri = Uri.parse(
-        '${ApiConfig.nextBusUrl}/buses/$id/edit-request',
-      );
-      
+      final uri = Uri.parse('${ApiConfig.nextBusUrl}/buses/$id/edit-request');
+
       final response = await client.get(
         uri,
         headers: {
@@ -193,8 +184,10 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
           'Content-Type': 'application/json',
         },
       );
-      
-      debugPrint('Get Edit Request Response status code: ${response.statusCode}');
+
+      debugPrint(
+        'Get Edit Request Response status code: ${response.statusCode}',
+      );
       debugPrint('Get Edit Request Response body: ${response.body}');
 
       if (response.statusCode == 200) {
@@ -213,9 +206,7 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
       PreferencesManager preferencesManager =
           await PreferencesManager.getInstance();
       final token = preferencesManager.jwtToken;
-      final uri = Uri.parse(
-        '${ApiConfig.nextBusUrl}/buses/$id/approve-edit',
-      );
+      final uri = Uri.parse('${ApiConfig.nextBusUrl}/buses/$id/approve-edit');
       final response = await client.post(
         uri,
         headers: {'Authorization': 'Bearer $token'},
@@ -231,6 +222,31 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
       }
     } catch (e) {
       throw Exception('Failed to approve edit request: $e');
+    }
+  }
+
+  @override
+  Future<BusModel> rejectApproval(String id) async {
+    try {
+      PreferencesManager preferencesManager =
+          await PreferencesManager.getInstance();
+      final token = preferencesManager.jwtToken;
+      final uri = Uri.parse('${ApiConfig.nextBusUrl}/buses/$id/reject');
+      final response = await client.post(
+        uri,
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      debugPrint(response.body);
+      final responseBody = json.decode(response.body);
+      final message = responseBody['message'];
+
+      if (response.statusCode == 200) {
+        return BusModel.fromJson(responseBody);
+      } else {
+        throw Exception(message);
+      }
+    } catch (e) {
+      throw Exception('Failed to reject edit request: $e');
     }
   }
 }

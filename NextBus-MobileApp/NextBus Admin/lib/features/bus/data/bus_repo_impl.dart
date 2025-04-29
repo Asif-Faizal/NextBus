@@ -57,7 +57,7 @@ class BusRepositoryImpl implements BusRepository {
       final result = await remoteDataSource.editBus(id, request);
       return Right(result);
     } catch (e) {
-      return Left(Exception('Failed to edit bus'));
+      return Left(Exception(e.toString()));
     }
   }
 
@@ -67,7 +67,7 @@ class BusRepositoryImpl implements BusRepository {
       final result = await remoteDataSource.getEditRequest(id);
       return Right(result);
     } catch (e) {
-      return Left(Exception('Failed to get edit request'));
+      return Left(Exception(e.toString()));
     }
   }
 
@@ -77,7 +77,17 @@ class BusRepositoryImpl implements BusRepository {
       final result = await remoteDataSource.approveEditRequest(id);
       return Right(result);
     } catch (e) {
-      return Left(Exception('Failed to approve edit request'));
+      return Left(Exception(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Exception, BusModel>> rejectApproval(String id) async {
+    try {
+      final result = await remoteDataSource.rejectApproval(id);
+      return Right(result);
+    } catch (e) {
+      return Left(Exception(e.toString()));
     }
   }
 }

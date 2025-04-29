@@ -12,6 +12,7 @@ import '../bloc/approve_bus/approve_bus_bloc.dart';
 import '../bloc/approve_edit/approve_edit_bloc.dart';
 import '../bloc/edit_bus/edit_bus_bloc.dart';
 import '../bloc/get_bus_by_id/get_bus_by_id_bloc.dart';
+import '../bloc/reject_approval/reject_approval_bloc.dart';
 import '../data/models/bus_request_model.dart';
 import '../domain/bus_entity.dart';
 import '../widget/edit_bus_form.dart';
@@ -103,6 +104,27 @@ class BusDetailsScreen extends StatelessWidget {
                     ),
                   );
                 } else if (state is ApproveEditFailure) {
+                  showErrorSnackBar(context, state.message);
+                }
+              },
+            ),
+            BlocListener<RejectApprovalBloc, RejectApprovalState>(
+              listener: (context, state) {
+                if (state is RejectApprovalSuccess) {
+                  Navigator.pop(context);
+                  context.read<GetBusByIdBloc>().add(FetchBusById(id));
+                  context.read<GetBusListBloc>().add(
+                    FetchBuses(
+                      BusListRequestModel(
+                        busName: '',
+                        busType: '',
+                        busSubType: '',
+                        page: 1,
+                        limit: 5,
+                      ),
+                    ),
+                  );
+                } else if (state is RejectApprovalFailure) {
                   showErrorSnackBar(context, state.message);
                 }
               },

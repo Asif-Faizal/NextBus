@@ -5,6 +5,7 @@ import 'package:next_bus_admin/features/bus/domain/bus_entity.dart';
 import '../bloc/approve_edit/approve_edit_bloc.dart';
 import '../bloc/edit_bus/edit_bus_bloc.dart';
 import '../bloc/get_edit_request/get_edit_request_bloc.dart';
+import '../bloc/reject_approval/reject_approval_bloc.dart';
 import '../cubits/bus_sub_type_cubit.dart';
 import '../cubits/bus_type_cubit.dart';
 import '../cubits/dropdown_selection_cubit.dart';
@@ -210,6 +211,29 @@ class _EditBusFormState extends State<EditBusForm> {
                       ),
                     );
                   },
+                ),
+              ),
+            if (widget.readOnly)
+            SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () {
+                    context.read<RejectApprovalBloc>().add(
+                      RejectApproval(id: widget.bus.id),
+                    );
+                  },
+                  child: BlocBuilder<RejectApprovalBloc, RejectApprovalState>(
+                    builder: (context, state) {
+                      if (state is RejectApprovalLoading) {
+                        return const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return const Text('Reject Edit');
+                    },
+                  ),
                 ),
               ),
             if (widget.readOnly)
