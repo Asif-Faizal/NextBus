@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:next_bus_admin/features/bus/domain/bus_entity.dart';
 
-import '../../data/add_bus_model.dart';
-import '../../domain/add_bus.dart';
+import '../../data/models/add_bus_model.dart';
+import '../../domain/usecases/add_bus.dart';
 
 part 'add_new_bus_event.dart';
 part 'add_new_bus_state.dart';

@@ -6,11 +6,11 @@ import '../../../core/theme/theme_cubit.dart';
 import '../../../core/widgets/gradient_background.dart';
 import '../bloc/add_new_bus/add_new_bus_bloc.dart';
 import '../bloc/get_bus_list/get_bus_list_bloc.dart';
-import '../data/add_bus_model.dart';
+import '../data/models/add_bus_model.dart';
 import '../cubits/dropdown_selection_cubit.dart';
 import '../cubits/bus_type_cubit.dart';
 import '../cubits/bus_sub_type_cubit.dart';
-import '../data/bus_request_model.dart';
+import '../data/models/bus_request_model.dart';
 
 class AddBusScreen extends StatelessWidget {
   AddBusScreen({super.key});

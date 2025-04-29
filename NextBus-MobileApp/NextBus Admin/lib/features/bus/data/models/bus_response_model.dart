@@ -1,6 +1,6 @@
 // data/models/bus_model.dart
 
-import '../domain/bus_entity.dart';
+import '../../domain/bus_entity.dart';
 
 class BusModel extends BusEntity {
   const BusModel({

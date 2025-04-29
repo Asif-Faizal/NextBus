@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:next_bus_admin/core/api/api_config.dart';
 import 'package:next_bus_admin/core/storage/shared_preferences_helper.dart';
 
-import 'add_bus_model.dart';
-import 'bus_request_model.dart';
-import 'bus_response_model.dart';
+import 'models/add_bus_model.dart';
+import 'models/bus_request_model.dart';
+import 'models/bus_response_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

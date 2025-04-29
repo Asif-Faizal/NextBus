@@ -4,7 +4,7 @@ import 'package:next_bus_admin/core/widgets/gradient_background.dart';
 import 'package:next_bus_admin/core/widgets/error_widget.dart';
 import 'package:next_bus_admin/core/widgets/loading_widget.dart';
 import 'package:next_bus_admin/features/bus/bloc/get_bus_list/get_bus_list_bloc.dart';
-import 'package:next_bus_admin/features/bus/data/bus_request_model.dart';
+import 'package:next_bus_admin/features/bus/data/models/bus_request_model.dart';
 
 import '../../../core/theme/theme_cubit.dart';
 import '../../../core/utils/bus_status.dart';

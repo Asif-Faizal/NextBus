@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
-import '../data/bus_response_model.dart';
-import 'bus_repo.dart';
+import '../../data/models/bus_response_model.dart';
+import '../bus_repo.dart';
 
 class GetBusByIdUseCase {
   final BusRepository repository;

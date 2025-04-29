@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 
-import '../data/add_bus_model.dart';
-import '../data/bus_response_model.dart';
-import 'bus_repo.dart';
+import '../../data/models/add_bus_model.dart';
+import '../../data/models/bus_response_model.dart';
+import '../bus_repo.dart';
 
 class AddBusUsecase {
   final BusRepository repository;

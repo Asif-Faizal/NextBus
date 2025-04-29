@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../domain/bus_entity.dart';
-import '../../domain/get_bus_by_id.dart';
+import '../../domain/usecases/get_bus_by_id.dart';
 
 part 'get_bus_by_id_event.dart';
 part 'get_bus_by_id_state.dart';

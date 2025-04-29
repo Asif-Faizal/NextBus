@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 
 import '../domain/bus_repo.dart';
-import 'add_bus_model.dart';
+import 'models/add_bus_model.dart';
 import 'bus_datasource.dart';
-import 'bus_request_model.dart';
-import 'bus_response_model.dart';
+import 'models/bus_request_model.dart';
+import 'models/bus_response_model.dart';
 
 class BusRepositoryImpl implements BusRepository {
   final BusRemoteDataSource remoteDataSource;

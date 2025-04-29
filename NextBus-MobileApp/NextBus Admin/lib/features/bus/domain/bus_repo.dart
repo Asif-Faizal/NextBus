@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 
-import '../data/add_bus_model.dart';
-import '../data/bus_request_model.dart';
-import '../data/bus_response_model.dart';
+import '../data/models/add_bus_model.dart';
+import '../data/models/bus_request_model.dart';
+import '../data/models/bus_response_model.dart';
 
 abstract class BusRepository {
   Future<Either<Exception, PaginatedBusResponse>> getBuses(BusListRequestModel request);

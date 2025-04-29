@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../data/bus_request_model.dart';
+import '../../data/models/bus_request_model.dart';
 import '../../domain/bus_entity.dart';
-import '../../domain/get_buses.dart';
+import '../../domain/usecases/get_buses.dart';
 
 part 'get_bus_list_event.dart';
 part 'get_bus_list_state.dart';
