@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:next_bus_admin/features/bus/domain/bus_entity.dart';
 
+import '../bloc/approve_edit/approve_edit_bloc.dart';
 import '../bloc/edit_bus/edit_bus_bloc.dart';
 import '../bloc/get_edit_request/get_edit_request_bloc.dart';
 import '../cubits/bus_sub_type_cubit.dart';
@@ -13,11 +14,7 @@ class EditBusForm extends StatefulWidget {
   final BusEntity bus;
   final bool readOnly;
 
-  const EditBusForm({
-    super.key,
-    required this.bus,
-    required this.readOnly,
-  });
+  const EditBusForm({super.key, required this.bus, required this.readOnly});
 
   @override
   State<EditBusForm> createState() => _EditBusFormState();
@@ -34,10 +31,16 @@ class _EditBusFormState extends State<EditBusForm> {
   void initState() {
     super.initState();
     busNameController = TextEditingController(text: widget.bus.busName);
-    busNumberPlateController = TextEditingController(text: widget.bus.busNumberPlate);
-    busOwnerNameController = TextEditingController(text: widget.bus.busOwnerName);
+    busNumberPlateController = TextEditingController(
+      text: widget.bus.busNumberPlate,
+    );
+    busOwnerNameController = TextEditingController(
+      text: widget.bus.busOwnerName,
+    );
     driverNameController = TextEditingController(text: widget.bus.driverName);
-    conductorNameController = TextEditingController(text: widget.bus.conductorName);
+    conductorNameController = TextEditingController(
+      text: widget.bus.conductorName,
+    );
 
     if (widget.readOnly) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -111,18 +114,46 @@ class _EditBusFormState extends State<EditBusForm> {
             Row(
               children: [
                 Expanded(
-                  child: TextFormField(
-                    readOnly: widget.readOnly,
-                    initialValue: widget.bus.busType,
-                    decoration: const InputDecoration(labelText: 'Bus Type'),
+                  child: BlocBuilder<BusTypeCubit, BusTypeState>(
+                    builder: (context, state) {
+                      return DropdownButtonFormField<String>(
+                        value: state.selectedType,
+                        hint: const Text('Bus Type'),
+                        items:
+                            BusType.options.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                        onChanged: (String? value) {
+                          context.read<BusTypeCubit>().selectBusType(value);
+                        },
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: TextFormField(
-                    readOnly: widget.readOnly,
-                    initialValue: widget.bus.busSubType,
-                    decoration: const InputDecoration(labelText: 'Bus Sub-Type'),
+                  child: BlocBuilder<BusSubTypeCubit, BusSubTypeState>(
+                    builder: (context, state) {
+                      return DropdownButtonFormField<String>(
+                        value: state.selectedSubType,
+                        hint: const Text('Bus Sub-Type'),
+                        items:
+                            BusSubType.options.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                        onChanged: (String? value) {
+                          context.read<BusSubTypeCubit>().selectBusSubType(
+                            value,
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
               ],
@@ -181,15 +212,29 @@ class _EditBusFormState extends State<EditBusForm> {
                   },
                 ),
               ),
-              if (widget.readOnly)
+            if (widget.readOnly)
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    context.read<ApproveEditBloc>().add(
+                      ApproveEdit(id: widget.bus.id),
+                    );
                   },
-                  child: const Text('Approve Edit'),
+                  child: BlocBuilder<ApproveEditBloc, ApproveEditState>(
+                    builder: (context, state) {
+                      if (state is ApproveEditLoading) {
+                        return const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return const Text('Approve Edit');
+                    },
+                  ),
                 ),
-              )
+              ),
           ],
         ),
       ),

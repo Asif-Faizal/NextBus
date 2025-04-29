@@ -9,6 +9,7 @@ import 'package:next_bus_admin/features/bus/bloc/get_bus_list/get_bus_list_bloc.
 
 import '../../../core/widgets/error_snackbar.dart';
 import '../bloc/approve_bus/approve_bus_bloc.dart';
+import '../bloc/approve_edit/approve_edit_bloc.dart';
 import '../bloc/edit_bus/edit_bus_bloc.dart';
 import '../bloc/get_bus_by_id/get_bus_by_id_bloc.dart';
 import '../data/models/bus_request_model.dart';
@@ -85,6 +86,27 @@ class BusDetailsScreen extends StatelessWidget {
                 }
               },
             ),
+            BlocListener<ApproveEditBloc, ApproveEditState>(
+              listener: (context, state) {
+                if (state is ApproveEditSuccess) {
+                  Navigator.pop(context);
+                  context.read<GetBusByIdBloc>().add(FetchBusById(id));
+                  context.read<GetBusListBloc>().add(
+                    FetchBuses(
+                      BusListRequestModel(
+                        busName: '',
+                        busType: '',
+                        busSubType: '',
+                        page: 1,
+                        limit: 5,
+                      ),
+                    ),
+                  );
+                } else if (state is ApproveEditFailure) {
+                  showErrorSnackBar(context, state.message);
+                }
+              },
+            ),
           ],
           child: BlocBuilder<GetBusByIdBloc, GetBusByIdState>(
             builder: (context, state) {
@@ -143,7 +165,11 @@ class BusDetailsScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 6),
                     child: ElevatedButton(
                       onPressed: () {
-                        context.read<ApproveBusBloc>().add(ApproveBus(id));
+                        context.read<ApproveBusBloc>().add(
+                          ApproveBus(
+                            id: state.bus.id,
+                          ),
+                        );
                       },
                       child: BlocBuilder<ApproveBusBloc, ApproveBusState>(
                         builder: (context, state) {

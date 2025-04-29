@@ -11,4 +11,5 @@ abstract class BusRepository {
   Future<Either<Exception, BusModel>> approveBus(String id);
   Future<Either<Exception, BusModel>> editBus(String id, AddBusModel request);
   Future<Either<Exception, AddBusModel>> getEditRequest(String id);
+  Future<Either<Exception, BusModel>> approveEditRequest(String id);
 }

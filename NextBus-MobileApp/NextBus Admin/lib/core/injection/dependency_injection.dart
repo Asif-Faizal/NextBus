@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import '../../features/bus/bloc/add_new_bus/add_new_bus_bloc.dart';
 import '../../features/bus/bloc/approve_bus/approve_bus_bloc.dart';
+import '../../features/bus/bloc/approve_edit/approve_edit_bloc.dart';
 import '../../features/bus/bloc/edit_bus/edit_bus_bloc.dart';
 import '../../features/bus/bloc/get_bus_by_id/get_bus_by_id_bloc.dart';
 import '../../features/bus/bloc/get_bus_list/get_bus_list_bloc.dart';
@@ -17,6 +18,7 @@ import '../../features/bus/data/models/bus_request_model.dart';
 import '../../features/bus/domain/usecases/add_bus.dart';
 import '../../features/bus/domain/bus_repo.dart';
 import '../../features/bus/domain/usecases/approve_bus.dart';
+import '../../features/bus/domain/usecases/approve_edit.dart';
 import '../../features/bus/domain/usecases/edit_bus.dart';
 import '../../features/bus/domain/usecases/get_bus_by_id.dart';
 import '../../features/bus/domain/usecases/get_buses.dart';
@@ -79,4 +81,6 @@ Future<void> initDependencyInjection() async {
   sl.registerLazySingleton<EditBusBloc>(() => EditBusBloc(editBusUsecase: sl()));
   sl.registerLazySingleton<GetEditRequestUsecase>(() => GetEditRequestUsecase(repository: sl()));
   sl.registerLazySingleton<GetEditRequestBloc>(() => GetEditRequestBloc(getEditRequest: sl()));
+  sl.registerLazySingleton<ApproveEditUsecase>(() => ApproveEditUsecase(repository: sl()));
+  sl.registerLazySingleton<ApproveEditBloc>(() => ApproveEditBloc(approveEditUsecase: sl()));
 }

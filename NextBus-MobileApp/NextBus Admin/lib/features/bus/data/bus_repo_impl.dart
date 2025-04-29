@@ -70,4 +70,14 @@ class BusRepositoryImpl implements BusRepository {
       return Left(Exception('Failed to get edit request'));
     }
   }
+
+  @override
+  Future<Either<Exception, BusModel>> approveEditRequest(String id) async {
+    try {
+      final result = await remoteDataSource.approveEditRequest(id);
+      return Right(result);
+    } catch (e) {
+      return Left(Exception('Failed to approve edit request'));
+    }
+  }
 }

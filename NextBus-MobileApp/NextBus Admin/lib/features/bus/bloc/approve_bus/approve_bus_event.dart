@@ -11,7 +11,7 @@ abstract class ApproveBusEvent extends Equatable {
 class ApproveBus extends ApproveBusEvent {
   final String id;
 
-  const ApproveBus(this.id);
+  const ApproveBus({required this.id});
 
   @override
   List<Object?> get props => [id];
