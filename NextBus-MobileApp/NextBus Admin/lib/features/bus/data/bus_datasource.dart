@@ -14,6 +14,7 @@ abstract class BusRemoteDataSource {
   Future<BusModel> addBus(AddBusModel request);
   Future<BusModel> approveBus(String id);
   Future<BusModel> editBus(String id, AddBusModel request);
+  Future<AddBusModel> getEditRequest(String id);
 }
 
 class BusRemoteDataSourceImpl implements BusRemoteDataSource {
@@ -171,6 +172,37 @@ class BusRemoteDataSourceImpl implements BusRemoteDataSource {
       }
     } catch (e) {
       throw Exception('Failed to edit bus: $e');
+    }
+  }
+
+  @override
+  Future<AddBusModel> getEditRequest(String id) async {
+    try {
+      PreferencesManager preferencesManager =
+          await PreferencesManager.getInstance();
+      final token = preferencesManager.jwtToken;
+      final uri = Uri.parse(
+        '${ApiConfig.nextBusUrl}/buses/$id/edit-request',
+      );
+      
+      final response = await client.get(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+      
+      debugPrint('Get Edit Request Response status code: ${response.statusCode}');
+      debugPrint('Get Edit Request Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return AddBusModel.fromJson(json.decode(response.body));
+      } else {
+        throw Exception('Failed to get edit request: ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Failed to get edit request: $e');
     }
   }
 }

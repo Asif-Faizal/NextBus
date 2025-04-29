@@ -14,6 +14,7 @@ import 'features/bus/bloc/approve_bus/approve_bus_bloc.dart';
 import 'features/bus/bloc/edit_bus/edit_bus_bloc.dart';
 import 'features/bus/bloc/get_bus_by_id/get_bus_by_id_bloc.dart';
 import 'features/bus/bloc/get_bus_list/get_bus_list_bloc.dart';
+import 'features/bus/bloc/get_edit_request/get_edit_request_bloc.dart';
 import 'features/bus/cubits/bus_sub_type_cubit.dart';
 import 'features/bus/cubits/bus_type_cubit.dart';
 import 'features/bus/cubits/dropdown_selection_cubit.dart';
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => sl<BusSubTypeCubit>()),
         BlocProvider(create: (context) => sl<ApproveBusBloc>()),
         BlocProvider(create: (context) => sl<EditBusBloc>()),
+        BlocProvider(create: (context) => sl<GetEditRequestBloc>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, state) {

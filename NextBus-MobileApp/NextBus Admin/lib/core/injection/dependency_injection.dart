@@ -7,6 +7,7 @@ import '../../features/bus/bloc/approve_bus/approve_bus_bloc.dart';
 import '../../features/bus/bloc/edit_bus/edit_bus_bloc.dart';
 import '../../features/bus/bloc/get_bus_by_id/get_bus_by_id_bloc.dart';
 import '../../features/bus/bloc/get_bus_list/get_bus_list_bloc.dart';
+import '../../features/bus/bloc/get_edit_request/get_edit_request_bloc.dart';
 import '../../features/bus/cubits/bus_sub_type_cubit.dart';
 import '../../features/bus/cubits/bus_type_cubit.dart';
 import '../../features/bus/cubits/dropdown_selection_cubit.dart';
@@ -19,6 +20,7 @@ import '../../features/bus/domain/usecases/approve_bus.dart';
 import '../../features/bus/domain/usecases/edit_bus.dart';
 import '../../features/bus/domain/usecases/get_bus_by_id.dart';
 import '../../features/bus/domain/usecases/get_buses.dart';
+import '../../features/bus/domain/usecases/get_edit_request.dart';
 import '../../features/login/bloc/login/login_bloc.dart';
 import '../../features/login/data/login/login_datasource.dart';
 import '../../features/login/data/login/login_repo_impl.dart';
@@ -75,4 +77,6 @@ Future<void> initDependencyInjection() async {
   sl.registerLazySingleton<ApproveBusBloc>(() => ApproveBusBloc(approveBusUsecase: sl()));
   sl.registerLazySingleton<EditBusUsecase>(() => EditBusUsecase(repository: sl()));
   sl.registerLazySingleton<EditBusBloc>(() => EditBusBloc(editBusUsecase: sl()));
+  sl.registerLazySingleton<GetEditRequestUsecase>(() => GetEditRequestUsecase(repository: sl()));
+  sl.registerLazySingleton<GetEditRequestBloc>(() => GetEditRequestBloc(getEditRequest: sl()));
 }

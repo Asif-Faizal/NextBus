@@ -31,4 +31,16 @@ class AddBusModel extends Equatable {
     'driverName': driverName,
     'conductorName': conductorName,
   };
+
+  factory AddBusModel.fromJson(Map<String, dynamic> json) {
+    return AddBusModel(
+      busName: json['busName'] as String,
+      busNumberPlate: json['busNumberPlate'] as String,
+      busOwnerName: json['busOwnerName'] as String,
+      busType: json['busType'] as String,
+      busSubType: json['busSubType'] as String,
+      driverName: json['driverName'] as String,
+      conductorName: json['conductorName'] as String,
+    );
+  }
 }
