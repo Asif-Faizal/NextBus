@@ -9,6 +9,7 @@ import 'package:next_bus_admin/features/bus/bloc/get_bus_list/get_bus_list_bloc.
 
 import '../../../core/widgets/error_snackbar.dart';
 import '../bloc/approve_bus/approve_bus_bloc.dart';
+import '../bloc/approve_delete/approve_delete_bloc.dart';
 import '../bloc/approve_edit/approve_edit_bloc.dart';
 import '../bloc/delete_bus/delete_bus_bloc.dart';
 import '../bloc/edit_bus/edit_bus_bloc.dart';
@@ -150,6 +151,28 @@ class BusDetailsScreen extends StatelessWidget {
                 }
               },
             ),
+            BlocListener<ApproveDeleteBloc, ApproveDeleteState>(
+              listener: (context, state) {
+                if (state is ApproveDeleteSuccess) {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  context.read<GetBusListBloc>().add(
+                    FetchBuses(
+                      BusListRequestModel(
+                        busName: '',
+                        busType: '',
+                        busSubType: '',
+                        page: 1,
+                        limit: 5,
+                      ),
+                    ),
+                  );
+                } else if (state is ApproveDeleteFailure) {
+                  Navigator.pop(context);
+                  showErrorSnackBar(context, state.message);
+                }
+              },
+            ),
           ],
           child: BlocBuilder<GetBusByIdBloc, GetBusByIdState>(
             builder: (context, state) {
@@ -282,8 +305,8 @@ class BusDetailsScreen extends StatelessWidget {
                               content: const Text('Are you sure you want to approve the delete request?'),
                               actions: [
                                 ElevatedButton(onPressed: () {
-                                  context.read<ApproveBusBloc>().add(
-                                    ApproveBus(id: state.bus.id),
+                                  context.read<ApproveDeleteBloc>().add(
+                                    ApproveDelete(id: state.bus.id),
                                   );
                                 }, child: const Text('Delete')),
                               ],

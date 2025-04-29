@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import '../../features/bus/bloc/add_new_bus/add_new_bus_bloc.dart';
 import '../../features/bus/bloc/approve_bus/approve_bus_bloc.dart';
+import '../../features/bus/bloc/approve_delete/approve_delete_bloc.dart';
 import '../../features/bus/bloc/approve_edit/approve_edit_bloc.dart';
 import '../../features/bus/bloc/delete_bus/delete_bus_bloc.dart';
 import '../../features/bus/bloc/edit_bus/edit_bus_bloc.dart';
@@ -20,6 +21,7 @@ import '../../features/bus/data/models/bus_request_model.dart';
 import '../../features/bus/domain/usecases/add_bus.dart';
 import '../../features/bus/domain/bus_repo.dart';
 import '../../features/bus/domain/usecases/approve_bus.dart';
+import '../../features/bus/domain/usecases/approve_delete.dart';
 import '../../features/bus/domain/usecases/approve_edit.dart';
 import '../../features/bus/domain/usecases/delete_bus.dart';
 import '../../features/bus/domain/usecases/edit_bus.dart';
@@ -91,4 +93,6 @@ Future<void> initDependencyInjection() async {
   sl.registerLazySingleton<RejectApprovalBloc>(() => RejectApprovalBloc(rejectApprovalUsecase: sl()));
   sl.registerLazySingleton<DeleteBusUsecase>(() => DeleteBusUsecase(busRepository: sl()));
   sl.registerLazySingleton<DeleteBusBloc>(() => DeleteBusBloc(deleteBusUsecase: sl()));
+  sl.registerLazySingleton<ApproveDeleteUsecase>(() => ApproveDeleteUsecase(busRepository: sl()));
+  sl.registerLazySingleton<ApproveDeleteBloc>(() => ApproveDeleteBloc(approveDeleteUsecase: sl()));
 }
